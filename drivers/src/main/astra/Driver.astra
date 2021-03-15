@@ -1,0 +1,50 @@
+import mams.HALConverter;
+import modules.TypeConversion;
+
+agent Driver extends mams.PassiveMAMSAgent {
+    module System system;
+    module Console console;
+    module HALConverter hal;
+    module Functions F;
+    module TypeConversion tc;
+
+    initial !init();
+
+    types mams {
+        formula service_uri(string);
+        formula vehicle(int);
+    }
+
+    initial service_uri("http://localhost:8081/vehicles");
+
+    rule +!init(){
+        system.trace(true);
+        MAMSAgent::!init();
+        MAMSAgent::!created("base");
+
+        +vehicle(tc.stringToInt(system.name()));
+        PassiveMAMSAgent::!listResource("drivers", "model.Driver");
+        console.println("Hello world, " + system.name());
+    }
+
+    rule +!handleNewListItemResource(string artifact_name, "model.Driver"){
+        cartago.println("artifact created: " + artifact_name);
+
+        PassiveMAMSAgent::!itemProperty(artifact_name, "vehicleUri", funct vehicleUri);
+        PassiveMAMSAgent::!itemProperty(artifact_name, "state", funct state);
+        cartago.println("vehicle uri: " + F.valueAsString(vehicleUri, 0));
+        cartago.println("state: " + F.valueAsString(state, 0));
+
+  /*      if(atIntersection == true) type = "leave";
+        else if(atLastCell == true & trafficLightStatus == true) type = "enter";
+        else if(F.valueAsInt(vehicleSpeed, 0) == 0) type = "accelerate";
+        else type = "move";*/
+
+        //!act(F.valueAsString(status,0));
+    }
+
+/*    rule +!act(string action): service_uri(string uri) & vehicle(int id){
+       cartago.println("PUT: [ id: " + id + " uri: " + uri);
+       !put(uri+"/"+id+"/action", "{\"type\":\""+action+"\"}", int code, string content);
+    }*/
+}

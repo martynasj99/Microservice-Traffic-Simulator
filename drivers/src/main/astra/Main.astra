@@ -1,0 +1,28 @@
+import mams.HALConverter;
+import modules.TypeConversion;
+
+agent Main extends mams.PassiveMAMSAgent {
+    module Prelude prelude;
+    module System system;
+    module Functions F;
+    module Console console;
+    module HALConverter hal;
+    module TypeConversion tc;
+
+
+    rule +!main(list args){
+        MAMSAgent::!setup(9001);
+        MAMSAgent::!created("base");
+
+        !get("http://localhost:8081/vehicles/count", int code, string content);
+
+        int NUM = tc.stringToInt(content);
+        int X = 1;
+        while(X < NUM+1){
+            S.createAgent(""+X, "Driver");
+            S.sleep(1000);
+            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/drivers\"}", int code1, string content1);
+            X = X+1;
+        }
+    }
+}
