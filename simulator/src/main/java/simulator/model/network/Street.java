@@ -8,7 +8,7 @@ import simulator.model.network.Intersection;
 public class Street{
 
     @Id @GeneratedValue private Long relationshipId;
-    @Property private String streetName;
+    @Property private String name;
     @Property private int length;
     @Property private int maxSpeed;
     @StartNode private Intersection source;
@@ -18,12 +18,11 @@ public class Street{
     }
 
     public Street(String streetName, int length, int maxSpeed, Intersection source, Intersection target) {
-        this.streetName = streetName;
+        this.name = streetName;
         this.length = length;
         this.maxSpeed = maxSpeed;
         this.source = source;
         this.target = target;
-        source.addOutLink(this);
     }
 
     public Long getRelationshipId() {
@@ -34,12 +33,12 @@ public class Street{
         this.relationshipId = relationshipId;
     }
 
-    public String getStreetName() {
-        return streetName;
+    public String getName() {
+        return name;
     }
 
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getLength() {
@@ -58,20 +57,19 @@ public class Street{
         this.maxSpeed = maxSpeed;
     }
 
-    public Long getSource() {
-        return source.getId();
+    public String getSource() {
+        return source.getName();
     }
 
     public void setSource(Intersection source) {
         this.source = source;
     }
 
-    public Long getTarget() {
-        return target.getId();
+    public String getTarget() {
+        return target.getName();
     }
 
     public void setTarget(Intersection target) {
         this.target = target;
     }
-
 }

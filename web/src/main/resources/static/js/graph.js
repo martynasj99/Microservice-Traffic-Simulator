@@ -23,7 +23,7 @@ function map(){
 
         var simulation = d3.forceSimulation(graph.nodes)
             .force("link", d3.forceLink()
-                .id(function (d) {return d.id;})
+                .id(function (d) {return d.name;})
                 .links(graph.links)
             )
             .force("charge", d3.forceManyBody().strength(-1500))

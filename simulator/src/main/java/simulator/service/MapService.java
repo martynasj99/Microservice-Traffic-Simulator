@@ -44,57 +44,17 @@ public class MapService {
 
     public void configure(Configuration configuration){
         intersectionRepository.deleteAll();
-
         this.safeMode = configuration.isSafeMode();
 
-        final int NO_INTERSECTIONS = 11;
+        for(Intersection intersection : configuration.getIntersections())
+            intersectionRepository.createNode(intersection.getName(), intersection.getType());
 
-        List<Intersection> intersections = new ArrayList<>();
+        for(Street street : configuration.getStreets())
+            streetRepository.createStreet(street.getSource(), street.getTarget(), street.getLength(), street.getMaxSpeed());
 
-        for(int i = 1; i <= NO_INTERSECTIONS; i++){
-            intersections.add(new Intersection("J"+ i));
-        }
+        for (Vehicle vehicle : vehicleService.getVehicles())
+            generateVehiclePath(vehicle);
 
-        intersections.add(new Intersection("H1"));
-        intersections.add(new Intersection("W1"));
-
-        intersections.get(4).setType("TRAFFIC LIGHT");
-        intersections.get(7).setType("TRAFFIC LIGHT");
-        intersections.get(3).setType("TRAFFIC LIGHT");
-        intersections.get(6).setType("TRAFFIC LIGHT");
-
-        intersections.get(11).setType("HOME");
-        intersections.get(12).setType("WORK");
-
-        List<Street> streets = Arrays.asList(
-                    new Street("S1",5,1, intersections.get(1), intersections.get(0)),
-                    new Street("S2", 10,2, intersections.get(2), intersections.get(1)),
-                    new Street("S3", 10,2, intersections.get(3), intersections.get(2)),
-                    new Street("S4", 7,2, intersections.get(1), intersections.get(4)),
-                    new Street("S5", 5,1, intersections.get(0), intersections.get(5)),
-                    new Street("S6", 5,1, intersections.get(5), intersections.get(4)),
-                    new Street("S7", 5,1, intersections.get(4), intersections.get(3)),
-                    new Street("S8", 5,1, intersections.get(8), intersections.get(3)),
-                    new Street("S9", 5,1, intersections.get(4), intersections.get(7)),
-                    new Street("S10", 5,1, intersections.get(5), intersections.get(6)),
-
-                    new Street("S11", 10,2, intersections.get(9), intersections.get(8)),
-                    new Street("S12", 7,2, intersections.get(8), intersections.get(9)),
-                    new Street("S13", 5,1, intersections.get(8), intersections.get(7)),
-                    new Street("S14", 5,1, intersections.get(7), intersections.get(8)),
-                    new Street("S15", 5,1, intersections.get(7), intersections.get(6)),
-                    new Street("S16", 5,1, intersections.get(6), intersections.get(7)),
-                    new Street("S17", 5,1, intersections.get(6), intersections.get(10)),
-                    new Street("S18", 5,1, intersections.get(10), intersections.get(6)),
-
-                    new Street("S19", 2,1, intersections.get(11), intersections.get(10)),
-                    new Street("S20", 2,1, intersections.get(10), intersections.get(11)),
-                    new Street("S20", 2,1, intersections.get(2), intersections.get(12)),
-                    new Street("S20", 2,1, intersections.get(12), intersections.get(2))
-        );
-
-        intersectionRepository.saveAll(intersections);
-        generateVehiclePaths();
         locationService.updateLocations();
         locationService.initTraffic();
     }
@@ -150,7 +110,7 @@ public class MapService {
     public Street getStreetBetweenTwoIntersections(String start, String end){
         Iterable<Street> streets = getOutStreetsAtIntersection(start);
         for(Street street : streets){
-            if(street.getTarget().equals(getIntersectionByName(end).getId())){
+            if(street.getTarget().equals(end)){
                 return street;
             }
         }
@@ -187,12 +147,6 @@ public class MapService {
                 HttpEntity<String> request = new HttpEntity<>(body.toString(), headers);
                 template.postForObject("http://localhost:8082/traffic-lights/add/"+intersection.getId(), request, Void.class);
             }
-        }
-    }
-
-    private void generateVehiclePaths() {
-        for (Vehicle vehicle : vehicleService.getVehicles()) {
-            generateVehiclePath(vehicle);
         }
     }
 
