@@ -138,19 +138,19 @@ public class VehicleService {
         }
     }
 
-    private void sendNotification(Vehicle vehicle, Driver driver){
+    private void sendNotification(Vehicle vehicle, EnvironmentState state){
         if(vehicle.getNotificationUri() == null) throw new NoAgentAttachedException("No Agent is attached to vehicle: " + vehicle.getId());
 
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Driver> request = new HttpEntity<>(driver, headers);
+        HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
 
-        logger.info("POSTING Notification: " + driver.getState().getId() + " Vehicle: " + vehicle.getId());
+        logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + vehicle.getId());
         String uri = vehicle.getNotificationUri();
         template.postForObject(uri, request, Void.class);
-        logger.info(" Notification Sent : "+driver.getState().getId()+" sent from : " + vehicle.getId());
+        logger.info(" Notification Sent : "+state.getId()+" sent from : " + vehicle.getId());
     }
 
     public synchronized void step(State state){
@@ -171,10 +171,7 @@ public class VehicleService {
         for(Vehicle vehicle : getVehicles()){
             if(!vehicle.hasArrived() && vehicle.getNotificationUri() != null){
                 EnvironmentState environmentState = generateEnvironment(vehicle);
-                Driver driver = new Driver();
-                driver.setState(environmentState);
-                driver.setVehicleUri("http://localhost:8081/vehicles/"+environmentState.getId()+"/action");
-                sendNotification(vehicle, driver);
+                sendNotification(vehicle, environmentState);
             }
         }
 

@@ -21,7 +21,7 @@ agent Main extends mams.PassiveMAMSAgent {
         while(X < NUM+1){
             S.createAgent(""+X, "Driver");
             S.sleep(1000);
-            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/drivers\"}", int code1, string content1);
+            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/states\"}", int code1, string content1);
             X = X+1;
         }
     }

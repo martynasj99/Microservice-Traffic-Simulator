@@ -17,6 +17,8 @@ public class InformationService {
         this.informationView.setTime(clock.toString());
     }
 
+
+
     public String getTime(){
         return informationView.getTime();
     }

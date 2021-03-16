@@ -2,14 +2,11 @@ package driversweb.model;
 
 public class Driver {
 
-    private String vehicleUri;
-    private EnvironmentState state;
+    public Driver() {
+    }
 
-    public Action generateAction(){
-        EnvironmentState state = getState();
+    public Action generateAction(EnvironmentState state){
         Action action = new Action();
-
-        String type;
 
         if(state.isHasArrived() ) action.setType("wait");
         else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
@@ -36,19 +33,4 @@ public class Driver {
                 && state.getVehicleSpeed() < state.getStreetSpeed();
     }
 
-    public String getVehicleUri() {
-        return vehicleUri;
-    }
-
-    public void setVehicleUri(String vehicleUri) {
-        this.vehicleUri = vehicleUri;
-    }
-
-    public EnvironmentState getState() {
-        return state;
-    }
-
-    public void setState(EnvironmentState state) {
-        this.state = state;
-    }
 }
