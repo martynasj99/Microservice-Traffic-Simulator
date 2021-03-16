@@ -37,7 +37,7 @@ public class DriversApplication {
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
                     HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-                    driverService.getDrivers().put(i, new Driver());
+                    driverService.getDrivers().put(i+1, new Driver());
                     restTemplate.exchange("http://localhost:8081/vehicles/"+(i+1), HttpMethod.PUT, body, Void.class);
                 }
             }

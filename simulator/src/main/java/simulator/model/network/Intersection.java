@@ -42,17 +42,6 @@ public class Intersection{
         inStreets.add(street);
     }
 
-    @Override
-    public String toString() {
-        return "Intersection{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", outStreets=" + outStreets +
-                ", inStreets=" + inStreets +
-                '}';
-    }
-
     public Long getId() {
         return id;
     }
@@ -73,16 +62,8 @@ public class Intersection{
         return outStreets;
     }
 
-    public void setOutStreets(Set<Street> outStreets) {
-        this.outStreets = outStreets;
-    }
-
     public Set<Street> getInStreets() {
         return inStreets;
-    }
-
-    public void setInStreets(Set<Street> inStreets) {
-        this.inStreets = inStreets;
     }
 
     public String getType() {

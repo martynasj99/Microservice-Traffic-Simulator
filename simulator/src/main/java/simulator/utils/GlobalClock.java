@@ -8,7 +8,7 @@ public class GlobalClock {
 
     private final int STEP_MULTIPLIER = 5;
 
-    private static GlobalClock clock = new GlobalClock();
+    private final static GlobalClock clock = new GlobalClock();
     private Date time;
 
     public static GlobalClock getInstance(){

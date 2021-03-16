@@ -28,20 +28,24 @@ public class MapService {
 
     @Autowired
     private IntersectionRepository intersectionRepository;
+
     @Autowired
     private StreetRepository streetRepository;
 
     @Autowired
     private VehicleService vehicleService;
+
     @Autowired
     private LocationService locationService;
 
     private Map<Long, Boolean> trafficLightStatus = new HashMap<>();
 
-    private boolean isSafeMode;
+    private boolean safeMode;
 
     public void configure(Configuration configuration){
         intersectionRepository.deleteAll();
+
+        this.safeMode = configuration.isSafeMode();
 
         final int NO_INTERSECTIONS = 11;
 
@@ -199,10 +203,6 @@ public class MapService {
             vehicle.setCurrentNode(path.get(0));
             vehicle.setNextNode(path.get(1));
         }
-    }
-
-    public boolean isSafeMode() {
-        return isSafeMode;
     }
 
     public Map<Long, Boolean> getTrafficLightStatus() {

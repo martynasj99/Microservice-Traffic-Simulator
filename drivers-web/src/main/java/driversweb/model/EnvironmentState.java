@@ -1,5 +1,8 @@
 package driversweb.model;
 
+import java.util.List;
+import java.util.Set;
+
 public class EnvironmentState {
 
     private int id;
@@ -13,7 +16,7 @@ public class EnvironmentState {
     private String intersectionName;
     private int numberAtIntersection;
 
-    private boolean atintersection;
+    private boolean atIntersection;
     private boolean atLastCell;
     private boolean hasArrived;
 
@@ -21,6 +24,8 @@ public class EnvironmentState {
     private boolean trafficAhead;
 
     private boolean canLeave;
+
+    private Set<String> possibleActions;
 
     public int getId() {
         return id;
@@ -87,11 +92,11 @@ public class EnvironmentState {
     }
 
     public boolean isAtIntersection() {
-        return atintersection;
+        return atIntersection;
     }
 
     public void setAtIntersection(boolean atIntersection) {
-        this.atintersection = atIntersection;
+        this.atIntersection = atIntersection;
     }
 
     public boolean isAtLastCell() {
@@ -140,5 +145,13 @@ public class EnvironmentState {
 
     public void setCanLeave(boolean canLeave) {
         this.canLeave = canLeave;
+    }
+
+    public Set<String> getPossibleActions() {
+        return possibleActions;
+    }
+
+    public void setPossibleActions(Set<String> possibleActions) {
+        this.possibleActions = possibleActions;
     }
 }

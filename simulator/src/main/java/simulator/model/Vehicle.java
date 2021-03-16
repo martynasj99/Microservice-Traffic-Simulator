@@ -29,12 +29,11 @@ public class Vehicle {
     private int streetProgress;
     private String notificationUri;
     private Action nextAction;
-    private List<String> validActions;
-    private String notification;
 
     private DayPlan plan;
 
     public Vehicle() {
+        this.progress = 2;
     }
 
     public void nextStage(){
@@ -149,22 +148,6 @@ public class Vehicle {
 
     public void setNextAction(Action nextAction) {
         this.nextAction = nextAction;
-    }
-
-    public List<String> getValidActions() {
-        return validActions;
-    }
-
-    public void setValidActions(List<String> validActions) {
-        this.validActions = validActions;
-    }
-
-    public String getNotification() {
-        return notification;
-    }
-
-    public void setNotification(String notification) {
-        this.notification = notification;
     }
 
     public String getStartNode(){

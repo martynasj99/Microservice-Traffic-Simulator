@@ -2,6 +2,9 @@ package simulator.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.List;
+import java.util.Set;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnvironmentState {
 
@@ -24,6 +27,8 @@ public class EnvironmentState {
     private boolean trafficAhead;
 
     private boolean canLeave;
+
+    private Set<String> possibleActions;
 
     public int getId() {
         return id;
@@ -143,6 +148,14 @@ public class EnvironmentState {
 
     public void setCanLeave(boolean canLeave) {
         this.canLeave = canLeave;
+    }
+
+    public Set<String> getPossibleActions() {
+        return possibleActions;
+    }
+
+    public void setPossibleActions(Set<String> possibleActions) {
+        this.possibleActions = possibleActions;
     }
 
     @Override

@@ -15,17 +15,4 @@ public class DecelerateExecutor implements ActionExecutor {
         return true;
     }
 
-    /**
-     * Decrease the speed of the vehicle by 1. It sends a notification to its agent to move after it does this.
-     * @param vehicle
-     * @param serviceContext
-     * @param parameters
-     * @return
-     */
-/*    @Override
-    public boolean execute(Vehicle vehicle, ServiceContext serviceContext, List<String> parameters) {
-        if(vehicle.getSpeed() > 0) vehicle.setSpeed(vehicle.getSpeed()-1);
-        vehicle.setNotification("move");
-        return true;
-    }*/
 }

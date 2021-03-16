@@ -6,7 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import simulator.Logging;
 import simulator.exception.NoAgentAttachedException;
 import simulator.model.*;
 import simulator.utils.GlobalClock;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
 @Service
 public class VehicleService {
 
-    Logger logger = Logging.getInstance().getLogger();
+    private final Logger logger = Logger.getLogger(VehicleService.class.getName());
 
     private GlobalClock clock = GlobalClock.getInstance();
 
@@ -51,31 +50,28 @@ public class VehicleService {
         return vehicles.size();
     }
 
-    public void generateValidActions(){
-        for(Vehicle vehicle : vehicles.values()) {
-            List<String> validActions = new ArrayList<>();
-            if (vehicle.getCurrentNode() != null) {
-                validActions.add("leave");
-            }
-            else if (vehicle.getCurrentStreet() != null) {
-                if (mapService.getStreetById(vehicle.getCurrentStreet()).getMaxSpeed() > vehicle.getSpeed() || vehicle.getSpeed() == 0) {
-                    validActions.add("accelerate");
-                }
-                if (vehicle.getSpeed() > 0) {
-                    validActions.add("decelerate");
-                }
-                if (vehicle.getStreetProgress() == locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells() - 1) {
-                    validActions.add("enter");
-                }else{
-                    validActions.add("move");
-                }
-            }
-            vehicle.setValidActions(validActions);
+    public Set<String> generatePossibleActions(Vehicle vehicle){
+        Set<String> validActions = new HashSet<>();
+        validActions.add("wait");
+        if (vehicle.getCurrentNode() != null) {
+            validActions.add("leave");
         }
+        else if (vehicle.getCurrentStreet() != null) {
+            validActions.add("accelerate");
+            if (vehicle.getSpeed() > 0) {
+                validActions.add("decelerate");
+                validActions.add("move");
+            }
+            if (vehicle.getStreetProgress() == locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells() - 1) {
+                validActions.add("enter");
+            }
+        }
+        return validActions;
     }
 
     public EnvironmentState generateEnvironment(Vehicle vehicle){
         EnvironmentState environmentState = new EnvironmentState();
+        environmentState.setPossibleActions(generatePossibleActions(vehicle));
         environmentState.setId(vehicle.getId().intValue());
         environmentState.setVehicleSpeed(vehicle.getSpeed());
         environmentState.setVehicleStreetProgress(vehicle.getStreetProgress());
@@ -138,7 +134,7 @@ public class VehicleService {
         }
     }
 
-    private void sendNotification(Vehicle vehicle, EnvironmentState state){
+    public void sendNotification(Vehicle vehicle, EnvironmentState state){
         if(vehicle.getNotificationUri() == null) throw new NoAgentAttachedException("No Agent is attached to vehicle: " + vehicle.getId());
 
         RestTemplate template = new RestTemplate();
@@ -151,30 +147,5 @@ public class VehicleService {
         String uri = vehicle.getNotificationUri();
         template.postForObject(uri, request, Void.class);
         logger.info(" Notification Sent : "+state.getId()+" sent from : " + vehicle.getId());
-    }
-
-    public synchronized void step(State state){
-        logger.info("Starting... [" + state.getStep() + "]");
-        informationService.setTime(state.getStep());;
-
-        for(Vehicle vehicle : getVehicles()){
-            if(!vehicle.hasArrived() && vehicle.getNotificationUri() != null){
-                if(vehicle.getNextAction() != null) {
-                    Action action = vehicle.getNextAction();
-                    vehicle.setNextAction(null);
-                    vehicle.execute(serviceContext, action);
-                    logger.info("Vehicle " + vehicle.getId() + " executed " +action.getType());
-                }
-            }
-        }
-
-        for(Vehicle vehicle : getVehicles()){
-            if(!vehicle.hasArrived() && vehicle.getNotificationUri() != null){
-                EnvironmentState environmentState = generateEnvironment(vehicle);
-                sendNotification(vehicle, environmentState);
-            }
-        }
-
-        updatePlans(clock.toString());
     }
 }

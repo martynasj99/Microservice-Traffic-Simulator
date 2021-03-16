@@ -3,9 +3,7 @@ package driversweb.controller;
 import driversweb.model.Action;
 import driversweb.model.Driver;
 import driversweb.model.EnvironmentState;
-import driversweb.Logging;
 import driversweb.service.DriverService;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,14 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
 @RestController
 public class DriverController {
 
-    Logger logger = Logging.getInstance().getLogger();
+    Logger logger = Logger.getLogger(DriverController.class.getName());
 
     private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -38,8 +35,12 @@ public class DriverController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Driver driver = driverService.getDrivers().get(id);
-
         Action action = driver.generateAction(state);
+
+        if(!state.getPossibleActions().contains(action.getType())){
+            logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");
+        }
+
         HttpEntity<Action> body = new HttpEntity<>(action, headers);
 
         logger.info("Sending... " + state.getId() + " " + action.getType());
