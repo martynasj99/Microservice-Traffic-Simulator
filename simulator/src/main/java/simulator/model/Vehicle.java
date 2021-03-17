@@ -1,7 +1,6 @@
 package simulator.model;
 
 import simulator.model.action.*;
-import simulator.model.plan.DayPlan;
 import simulator.model.plan.VehicleRoute;
 import simulator.service.ServiceContext;
 
@@ -16,6 +15,7 @@ public class Vehicle {
         executors.put("move", new MoveFactory());
         executors.put("enter", new EnterIntersectionFactory());
         executors.put("leave", new LeaveIntersectionFactory());
+        executors.put("plan", new ChangePlanFactory());
     }
 
     private Long id;
@@ -29,8 +29,6 @@ public class Vehicle {
     private int streetProgress;
     private String notificationUri;
     private Action nextAction;
-
-    private DayPlan plan;
 
     public Vehicle() {
         this.progress = 2;
@@ -169,11 +167,4 @@ public class Vehicle {
         getRoute().setPath(path);
     }
 
-    public DayPlan getPlan() {
-        return plan;
-    }
-
-    public void setPlan(DayPlan plan) {
-        this.plan = plan;
-    }
 }

@@ -40,7 +40,6 @@ public class MapController {
         return mapService.getIntersectionByName(name);
     }
 
-
     @GetMapping("/intersection/{id}/out")
     public Iterable<Street> getOutStreetsAtIntersection(@PathVariable String id){
         return mapService.getOutStreetsAtIntersection(id);
@@ -56,19 +55,14 @@ public class MapController {
         return mapService.getStreetById(id);
     }
 
-/*    @PostMapping("/add/{toNode}")
-    public void add(@RequestBody Street street, @RequestBody Intersection intersection, @PathVariable Long toNode) throws Exception{
-        mapService.addIntersectionStreet(intersection, street, toNode);
-    }*/
-
     @PostMapping("/intersection/add")
     public void addIntersection(@RequestBody Intersection intersection){
         mapService.addIntersection(intersection);
     }
 
-    @PostMapping("/street/add/{from}/{to}")
-    public void addStreet(@PathVariable Long from, @PathVariable Long to, @RequestBody Street street) throws Exception{
-        mapService.addStreet(from, to, street);
+    @PostMapping("/street/add")
+    public void addStreet(@RequestBody Street street) throws Exception{
+        mapService.addStreet(street);
     }
 
     @GetMapping("/street/{from}/{to}")

@@ -29,12 +29,6 @@
       "route": {
         "startNode": "W1"
       },
-      "plan": {
-        "schedule": {
-          "02:00": "H1",
-          "10:00": "W1"
-        }
-      },
       "speed": 1
     },
     {

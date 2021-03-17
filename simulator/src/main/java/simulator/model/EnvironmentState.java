@@ -2,13 +2,13 @@ package simulator.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.List;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnvironmentState {
 
     private int id;
+    private String time;
 
     private int vehicleStreetProgress;
     private int streetLength;
@@ -22,6 +22,7 @@ public class EnvironmentState {
     private boolean atIntersection;
     private boolean atLastCell;
     private boolean hasArrived;
+    private boolean hasEndNode;
 
     private boolean trafficInVision;
     private boolean trafficAhead;
@@ -36,6 +37,14 @@ public class EnvironmentState {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public int getVehicleStreetProgress() {
@@ -158,10 +167,20 @@ public class EnvironmentState {
         this.possibleActions = possibleActions;
     }
 
+    public boolean isHasEndNode() {
+        return hasEndNode;
+    }
+
+    public void setHasEndNode(boolean hasEndNode) {
+        this.hasEndNode = hasEndNode;
+    }
+
+
     @Override
     public String toString() {
         return "EnvironmentState{" +
                 "id=" + id +
+                ", time='" + time + '\'' +
                 ", vehicleStreetProgress=" + vehicleStreetProgress +
                 ", streetLength=" + streetLength +
                 ", vehicleSpeed=" + vehicleSpeed +
@@ -173,9 +192,11 @@ public class EnvironmentState {
                 ", atIntersection=" + atIntersection +
                 ", atLastCell=" + atLastCell +
                 ", hasArrived=" + hasArrived +
+                ", hasEndNode=" + hasEndNode +
                 ", trafficInVision=" + trafficInVision +
                 ", trafficAhead=" + trafficAhead +
                 ", canLeave=" + canLeave +
+                ", possibleActions=" + possibleActions +
                 '}';
     }
 }

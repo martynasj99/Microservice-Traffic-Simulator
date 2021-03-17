@@ -1,4 +1,4 @@
-package simulator.model.plan;
+package driversweb.model;
 
 import java.util.Map;
 

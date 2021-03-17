@@ -2,13 +2,19 @@ package driversweb.model;
 
 public class Driver {
 
+    private DayPlan plan;
+
     public Driver() {
     }
 
     public Action generateAction(EnvironmentState state){
         Action action = new Action();
 
-        if(state.isHasArrived() ) action.setType("wait");
+        if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(state.getTime()) ){
+            action.setType("plan");
+            action.setNewDestination(getPlan().getSchedule().get(state.getTime()));
+        }
+        else if(state.isHasArrived() ) action.setType("wait");
         else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
         else if(state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() > 0) action.setType("enter");
         else if(state.getVehicleSpeed() == 0 && canAccelerate(state)) action.setType("accelerate");
@@ -33,4 +39,12 @@ public class Driver {
                 && state.getVehicleSpeed() < state.getStreetSpeed();
     }
 
+
+    public DayPlan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(DayPlan plan) {
+        this.plan = plan;
+    }
 }

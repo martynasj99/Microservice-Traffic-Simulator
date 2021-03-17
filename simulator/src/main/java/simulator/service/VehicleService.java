@@ -73,11 +73,13 @@ public class VehicleService {
         EnvironmentState environmentState = new EnvironmentState();
         environmentState.setPossibleActions(generatePossibleActions(vehicle));
         environmentState.setId(vehicle.getId().intValue());
+        environmentState.setTime(informationService.getTime());
         environmentState.setVehicleSpeed(vehicle.getSpeed());
         environmentState.setVehicleStreetProgress(vehicle.getStreetProgress());
+        environmentState.setHasEndNode(vehicle.getEndNode() != null);
 
         if(vehicle.getCurrentStreet() != null){
-            Traffic traffic = serviceContext.locationService.getTraffic().get(vehicle.getCurrentStreet());
+            Traffic traffic = locationService.getTraffic().get(vehicle.getCurrentStreet());
             environmentState.setStreetSpeed(mapService.getStreetById(vehicle.getCurrentStreet()).getMaxSpeed());
             environmentState.setStreetLength(locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells());
 
@@ -94,8 +96,8 @@ public class VehicleService {
         else if(vehicle.getCurrentNode() != null) {
             environmentState.setAtIntersection(true);
             if(vehicle.getNextNode() != null && vehicle.getEndNode() != null && !vehicle.hasArrived()){
-                Long currentStreetId = serviceContext.mapService.getStreetBetweenTwoIntersections(vehicle.getCurrentNode(), vehicle.getNextNode()).getRelationshipId();
-                Traffic traffic = serviceContext.locationService.getTraffic().get(currentStreetId);
+                Long currentStreetId = mapService.getStreetBetweenTwoIntersections(vehicle.getCurrentNode(), vehicle.getNextNode()).getRelationshipId();
+                Traffic traffic = locationService.getTraffic().get(currentStreetId);
 
                 Queue<Vehicle> waiting = locationService.getLocations().getWaitingToLeave().getOrDefault(vehicle.getCurrentNode(), new LinkedList<>());
 
@@ -120,18 +122,6 @@ public class VehicleService {
 
     public boolean checkTrafficLightStatus(Long fromId){
         return mapService.getTrafficLightStatus().getOrDefault(fromId, true);
-    }
-
-    public void updatePlans(String time){
-        for(Vehicle vehicle : vehicles.values()){
-            if( vehicle.getPlan() != null
-                    && (vehicle.hasArrived() || vehicle.getEndNode() == null)
-                    && vehicle.getPlan().getSchedule().containsKey(time) ){
-                vehicle.newPlan();
-                vehicle.setEndNode(vehicle.getPlan().getSchedule().get(time));
-                mapService.generateVehiclePath(vehicle);
-            }
-        }
     }
 
     public void sendNotification(Vehicle vehicle, EnvironmentState state){

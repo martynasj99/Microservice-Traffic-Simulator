@@ -40,6 +40,7 @@ public class StepController {
                 if(vehicle.getNextAction() != null) {
                     Action action = vehicle.getNextAction();
                     vehicle.setNextAction(null);
+                    if(action.getNewDestination() != null) vehicle.setEndNode(action.getNewDestination());
                     vehicle.execute(serviceContext, action);
                     logger.info("Vehicle " + vehicle.getId() + " executed " +action.getType());
                 }
@@ -53,7 +54,6 @@ public class StepController {
             }
         }
 
-        vehicleService.updatePlans(clock.toString());
         double endStep = System.currentTimeMillis();
         logger.info("Step "+ state.getStep() + " at time: " + clock + " took " + (endStep - startStep)/100 + "s");
     }

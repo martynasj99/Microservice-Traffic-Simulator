@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import simulator.Configuration;
 import simulator.exception.IntersectionNotFoundException;
+import simulator.exception.InvalidException;
 import simulator.exception.StreetNotFoundException;
 import simulator.model.*;
 import simulator.model.network.Intersection;
@@ -50,7 +51,7 @@ public class MapService {
             intersectionRepository.createNode(intersection.getName(), intersection.getType());
 
         for(Street street : configuration.getStreets())
-            streetRepository.createStreet(street.getSource(), street.getTarget(), street.getLength(), street.getMaxSpeed());
+            streetRepository.createStreet(street.getSource(), street.getTarget(), street.getName(), street.getLength(), street.getMaxSpeed());
 
         for (Vehicle vehicle : vehicleService.getVehicles())
             generateVehiclePath(vehicle);
@@ -97,14 +98,10 @@ public class MapService {
         return intersectionRepository.findByName(name).<Iterable<Street>>map(Intersection::getInStreets).orElse(null);
     }
 
-    public void addIntersectionStreet(Intersection intersection, Street street, Long toNode) throws Exception{
-        addIntersection(intersection);
-        addStreet(intersection.getId(), toNode, street);
+    public void addIntersection(Intersection intersection){
+        intersectionRepository.createNode(intersection.getName(), intersection.getType());
     }
 
-    public void addIntersection(Intersection intersection){
-        intersectionRepository.save(intersection);
-    }
     public void removeIntersection(Intersection intersection){intersectionRepository.delete(intersection);}
 
     public Street getStreetBetweenTwoIntersections(String start, String end){
@@ -117,21 +114,10 @@ public class MapService {
         throw new StreetNotFoundException("Street between node: " + start +" and node: " + end + " not found.");
     }
 
-    public void addStreet(Long fromId, Long toId, Street street) throws Exception{
-        Intersection intersection1 = intersectionRepository.findById(fromId).orElse(null);
-        Intersection intersection2 = intersectionRepository.findById(toId).orElse(null);
-
-        if(intersection1 == null || intersection2 == null){
-            throw new IntersectionNotFoundException("Intersection with id: "+fromId+" or id: "+toId+" Not Found");
-        }
-
-        street.setSource(intersection1);
-        street.setTarget(intersection2);
-        intersection1.addOutLink(street);
-        intersectionRepository.save(intersection1);
-        intersectionRepository.save(intersection2);
-
-        locationService.addNewTraffic(street);
+    public void addStreet(Street street) throws InvalidException {
+        streetRepository.createStreet(street.getSource(), street.getTarget(), street.getName(), street.getLength(), street.getMaxSpeed());
+        Street s = streetRepository.findByName(street.getName()).orElseThrow(() -> new InvalidException("Street: "+street.getName()+ " not found"));
+        locationService.addNewTraffic(s);
     }
 
     public void generateTrafficLights(){

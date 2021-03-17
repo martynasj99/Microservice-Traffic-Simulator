@@ -8,6 +8,7 @@ import simulator.service.VehicleService;
 
 @Service
 public class ServiceContext {
+    @Autowired public InformationService informationService;
     @Autowired public LocationService locationService;
     @Autowired public MapService mapService;
     @Autowired public VehicleService vehicleService;
