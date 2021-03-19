@@ -36,7 +36,7 @@ public class StepController {
         informationService.setTime(state.getStep());;
 
         for(Vehicle vehicle : vehicleService.getVehicles()){
-            if(!vehicle.hasArrived() && vehicle.getNotificationUri() != null){
+            if(vehicle.getNotificationUri() != null){
                 if(vehicle.getNextAction() != null) {
                     Action action = vehicle.getNextAction();
                     vehicle.setNextAction(null);
@@ -48,7 +48,7 @@ public class StepController {
         }
 
         for(Vehicle vehicle : vehicleService.getVehicles()){
-            if(!vehicle.hasArrived() && vehicle.getNotificationUri() != null){
+            if(vehicle.getNotificationUri() != null){
                 EnvironmentState environmentState = vehicleService.generateEnvironment(vehicle);
                 vehicleService.sendNotification(vehicle, environmentState);
             }

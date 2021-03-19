@@ -16,7 +16,7 @@
       "currentStreet": null,
       "route": {
         "startNode": "J1",
-        "endNode": "J3"
+        "endNode": "H2"
       },
       "currentNode": "J1",
       "speed": 1
@@ -56,7 +56,7 @@
       "currentStreet": null,
       "route": {
         "startNode": "J2",
-        "endNode": "J10"
+        "endNode": "H3"
       },
       "currentNode": "W1",
       "speed": 1
@@ -108,13 +108,38 @@
       "type": "NONE"
     },
     {
+      "name": "J12",
+      "type": "NONE"
+    },
+    {
+      "name": "J13",
+      "type": "NONE"
+    },
+    {
+      "name": "J14",
+      "type": "NONE"
+    },
+    {
       "name": "W1",
       "type": "WORK"
     },
     {
       "name": "H1",
       "type": "HOME"
+    },
+    {
+      "name": "H2",
+      "type": "HOME"
+    },
+    {
+      "name": "H3",
+      "type": "HOME"
+    },
+    {
+      "name": "H4",
+      "type": "HOME"
     }
+
 
   ],
   "streets": [
@@ -358,6 +383,138 @@
       },
       "target": {
         "name": "J3"
+      }
+    },
+    {
+      "name": "S23",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J11"
+      },
+      "target": {
+        "name": "J12"
+      }
+    },
+    {
+      "name": "S24",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J12"
+      },
+      "target": {
+        "name": "J11"
+      }
+    },
+    {
+      "name": "S25",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J12"
+      },
+      "target": {
+        "name": "J13"
+      }
+    },
+    {
+      "name": "S26",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J13"
+      },
+      "target": {
+        "name": "J12"
+      }
+    },
+    {
+      "name": "S27",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J13"
+      },
+      "target": {
+        "name": "J14"
+      }
+    },
+    {
+      "name": "S24",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J14"
+      },
+      "target": {
+        "name": "J13"
+      }
+    },
+    {
+      "name": "S25",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "H2"
+      },
+      "target": {
+        "name": "J12"
+      }
+    },
+    {
+      "name": "S26",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J12"
+      },
+      "target": {
+        "name": "H2"
+      }
+    },
+    {
+      "name": "S27",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "H3"
+      },
+      "target": {
+        "name": "J13"
+      }
+    },
+    {
+      "name": "S28",
+      "length": 2,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J13"
+      },
+      "target": {
+        "name": "H3"
+      }
+    },
+    {
+      "name": "S29",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "H4"
+      },
+      "target": {
+        "name": "J14"
+      }
+    },
+    {
+      "name": "S30",
+      "length": 1,
+      "maxSpeed": 1,
+      "source": {
+        "name": "J14"
+      },
+      "target": {
+        "name": "H4"
       }
     }
   ]

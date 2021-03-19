@@ -21,26 +21,26 @@ function map(){
         r = 10,
         ctx = canvas.node().getContext("2d");
 
-        var simulation = d3.forceSimulation(graph.nodes)
-            .force("link", d3.forceLink()
-                .id(function (d) {return d.name;})
-                .links(graph.links)
-            )
-            .force("charge", d3.forceManyBody().strength(-1500))
-            .force("center", d3.forceCenter(width/2, height/2))
-            .on("end", update);
+    var simulation = d3.forceSimulation(graph.nodes)
+        .force("link", d3.forceLink()
+            .id(function (d) {return d.name;})
+            .links(graph.links)
+        )
+        .force("charge", d3.forceManyBody().strength(-1500))
+        .force("center", d3.forceCenter(width/2, height/2))
+        .on("end", update);
 
-        function update(){
-            ctx.clearRect(0,0, width, height);
-            locations = webSocket2.data;
-            traffic = webSocket1.data;
-            trafficLights = webSocket4.data;
-            graph.nodes.forEach(drawNode);
-            isSet = true;
-            graph.links.forEach(drawLink);
-            graph.links.forEach(drawVehicleAtLink);
-            graph.nodes.forEach(drawVehicleAtNode);
-        }
+    function update(){
+        ctx.clearRect(0,0, width, height);
+        locations = webSocket2.data;
+        traffic = webSocket1.data;
+        trafficLights = webSocket4.data;
+        graph.nodes.forEach(drawNode);
+        isSet = true;
+        graph.links.forEach(drawLink);
+        graph.links.forEach(drawVehicleAtLink);
+        graph.nodes.forEach(drawVehicleAtNode);
+    }
 
     function drawNode(d){
         if(isSet === false){

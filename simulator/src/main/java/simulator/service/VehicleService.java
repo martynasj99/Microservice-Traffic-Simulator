@@ -77,6 +77,7 @@ public class VehicleService {
         environmentState.setVehicleSpeed(vehicle.getSpeed());
         environmentState.setVehicleStreetProgress(vehicle.getStreetProgress());
         environmentState.setHasEndNode(vehicle.getEndNode() != null);
+        environmentState.setHasArrived(vehicle.hasArrived());
 
         if(vehicle.getCurrentStreet() != null){
             Traffic traffic = locationService.getTraffic().get(vehicle.getCurrentStreet());
