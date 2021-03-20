@@ -20,7 +20,7 @@ public interface IntersectionRepository extends Neo4jRepository<Intersection, Lo
             "RETURN p")
     Iterable<Map<String, Object>> findShortestPath(String n1, String n2);
 
-    @Query("CREATE (:Intersection { name: $0, type: $1 })")
-    void createNode(String name, String type);
+    @Query("CREATE (:Intersection { name: $0, type: $1, capacity: $2 })")
+    void createNode(String name, String type, int capacity);
 
 }

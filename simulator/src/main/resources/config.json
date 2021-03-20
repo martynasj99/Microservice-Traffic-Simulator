@@ -121,23 +121,28 @@
     },
     {
       "name": "W1",
-      "type": "WORK"
+      "type": "WORK",
+      "capacity": 10
     },
     {
       "name": "H1",
-      "type": "HOME"
+      "type": "HOME",
+      "capacity": 2
     },
     {
       "name": "H2",
-      "type": "HOME"
+      "type": "HOME",
+      "capacity": 2
     },
     {
       "name": "H3",
-      "type": "HOME"
+      "type": "HOME",
+      "capacity": 2
     },
     {
       "name": "H4",
-      "type": "HOME"
+      "type": "HOME",
+      "capacity": 2
     }
 
 

@@ -17,6 +17,7 @@ public class Intersection{
     private String name;
     private Set<String> uris;
     private String type;
+    private int capacity;
 
     @Relationship(type = "STREET", direction = Relationship.OUTGOING)
     private Set<Street> outStreets;
@@ -24,7 +25,9 @@ public class Intersection{
     @Relationship(type = "STREET", direction = Relationship.INCOMING)
     private Set<Street> inStreets;
 
-    private Intersection(){}
+    private Intersection(){
+        this.capacity = 1;
+    }
 
     public Intersection(String name) {
         this.name = name;
@@ -83,6 +86,14 @@ public class Intersection{
 
     public void setUris(Set<String> uris) {
         this.uris = uris;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }
 

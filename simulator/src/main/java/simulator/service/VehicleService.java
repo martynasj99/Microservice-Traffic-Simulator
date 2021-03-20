@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import simulator.exception.NoAgentAttachedException;
 import simulator.model.*;
+import simulator.model.network.Intersection;
 import simulator.utils.GlobalClock;
 
 import java.util.*;
@@ -85,9 +86,10 @@ public class VehicleService {
             environmentState.setStreetLength(locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells());
 
             if (vehicle.getStreetProgress() == locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells() - 1) {
+                Intersection next = mapService.getIntersectionByName(vehicle.getNextNode());
                 environmentState.setAtLastCell(true);
-                environmentState.setHasVehiclesInNode(locationService.getNumberOfVehiclesAtNode().containsKey(mapService.getIntersectionByName(vehicle.getNextNode()).getId()));
-                environmentState.setIntersectionName(vehicle.getNextNode());
+                environmentState.setIntersectionCurrentCapacity(locationService.getLocations().getNumberOfVehiclesAtNodes().getOrDefault(next.getId(), 0));
+                environmentState.setIntersectionMaxCapacity(next.getCapacity());
                 environmentState.setTrafficLightStatus(checkTrafficLightStatus(vehicle.getCurrentStreet()));
             }else{
                 environmentState.setTrafficAhead(traffic.getTraffic()[vehicle.getStreetProgress()+1] != null);

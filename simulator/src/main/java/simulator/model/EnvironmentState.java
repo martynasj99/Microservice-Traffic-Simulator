@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Set;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class EnvironmentState {
 
     private int id;
@@ -15,9 +14,10 @@ public class EnvironmentState {
     private int vehicleSpeed;
     private int streetSpeed;
     private boolean trafficLightStatus;
-    private boolean hasVehiclesInNode;
-    private String intersectionName;
     private int numberAtIntersection;
+
+    private int intersectionCurrentCapacity;
+    private int intersectionMaxCapacity;
 
     private boolean atIntersection;
     private boolean atLastCell;
@@ -87,20 +87,20 @@ public class EnvironmentState {
         this.trafficLightStatus = trafficLightStatus;
     }
 
-    public boolean isHasVehiclesInNode() {
-        return hasVehiclesInNode;
+    public int getIntersectionCurrentCapacity() {
+        return intersectionCurrentCapacity;
     }
 
-    public void setHasVehiclesInNode(boolean hasVehiclesInNode) {
-        this.hasVehiclesInNode = hasVehiclesInNode;
+    public void setIntersectionCurrentCapacity(int intersectionCurrentCapacity) {
+        this.intersectionCurrentCapacity = intersectionCurrentCapacity;
     }
 
-    public String getIntersectionName() {
-        return intersectionName;
+    public int getIntersectionMaxCapacity() {
+        return intersectionMaxCapacity;
     }
 
-    public void setIntersectionName(String intersectionName) {
-        this.intersectionName = intersectionName;
+    public void setIntersectionMaxCapacity(int intersectionMaxCapacity) {
+        this.intersectionMaxCapacity = intersectionMaxCapacity;
     }
 
     public boolean isAtIntersection() {
@@ -175,7 +175,6 @@ public class EnvironmentState {
         this.hasEndNode = hasEndNode;
     }
 
-
     @Override
     public String toString() {
         return "EnvironmentState{" +
@@ -186,9 +185,9 @@ public class EnvironmentState {
                 ", vehicleSpeed=" + vehicleSpeed +
                 ", streetSpeed=" + streetSpeed +
                 ", trafficLightStatus=" + trafficLightStatus +
-                ", hasVehiclesInNode=" + hasVehiclesInNode +
-                ", intersectionName='" + intersectionName + '\'' +
                 ", numberAtIntersection=" + numberAtIntersection +
+                ", intersectionCurrentCapacity=" + intersectionCurrentCapacity +
+                ", intersectionMaxCapacity=" + intersectionMaxCapacity +
                 ", atIntersection=" + atIntersection +
                 ", atLastCell=" + atLastCell +
                 ", hasArrived=" + hasArrived +

@@ -13,7 +13,7 @@ public class DecelerateExecutor implements ActionExecutor {
     public boolean execute(Vehicle vehicle, ServiceContext serviceContext, List<String> parameters) {
         if(vehicle.getSpeed() < 1) throw new InvalidActionException("Vehicle " + vehicle.getId() + " can't decelerate");
         vehicle.decelerate();
-        vehicle.execute(serviceContext, new Action("move"));
+        //vehicle.execute(serviceContext, new Action("move"));
         return true;
     }
 
