@@ -1,8 +1,10 @@
 package simulator.model.network;
 
 import org.neo4j.ogm.annotation.*;
+import org.springframework.stereotype.Indexed;
 
 
+import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ public class Intersection{
     private Long id;
 
     private String name;
+    private Set<String> uris;
     private String type;
 
     @Relationship(type = "STREET", direction = Relationship.OUTGOING)
@@ -72,6 +75,14 @@ public class Intersection{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Set<String> getUris() {
+        return uris;
+    }
+
+    public void setUris(Set<String> uris) {
+        this.uris = uris;
     }
 }
 

@@ -1,3 +1,6 @@
+var maxX = 0;
+var maxY = 0;
+
 var locations = {},
     traffic = {},
     graph = {},
@@ -13,15 +16,26 @@ function map(){
 
     graph = webSocket3.data;
 
+    let canvas = d3.select("#network");
+/*
 
+    console.log("maxX " + maxX);
+    console.log("maxY " + maxY);
+/!*    if(maxX > canvas.attr("width")) $("#network").attr("width", maxX);
+    if(maxY > canvas.attr("height")) $("#network").attr("height", maxY);*!/
+    d3.select(window)
+        .on("resize", function() {
+            $("#network").attr("width", maxX);
+            $("#network").attr("height", maxY);
+        });
+*/
 
-    var canvas = d3.select("#network"),
-        width = canvas.attr("width"),
+    let width = canvas.attr("width"),
         height = canvas.attr("height"),
         r = 10,
         ctx = canvas.node().getContext("2d");
 
-    var simulation = d3.forceSimulation(graph.nodes)
+    let simulation = d3.forceSimulation(graph.nodes)
         .force("link", d3.forceLink()
             .id(function (d) {return d.name;})
             .links(graph.links)
@@ -43,7 +57,10 @@ function map(){
     }
 
     function drawNode(d){
+
         if(isSet === false){
+            if(d.x > maxX) maxX = d.x;
+            if(d.y > maxY) maxY = d.y;
             x[d.id] = d.x;
             y[d.id] = d.y;
         }
@@ -64,15 +81,15 @@ function map(){
         ctx.lineWidth = 8;
         ctx.strokeStyle = "#000000";
         ctx.moveTo(l.source.x, l.source.y);
-        ctx.fillText("STREET ID: " + l.relationshipId, (l.source.x+l.target.x)/2, (l.source.y+l.target.y)/2);
+        ctx.fillText("L: " + l.length, (l.source.x+l.target.x)/2, (l.source.y+l.target.y)/2);
         ctx.lineTo(l.target.x, l.target.y);
         ctx.stroke();
     }
 
     function drawVehicleAtNode(d){
-        var num = locations[d.id];
+        let num = locations[d.id];
 
-        for(var i = 0; i < num; i++){
+        for(let i = 0; i < num; i++){
             ctx.beginPath();
             ctx.fillStyle = "#f5ef42"
             ctx.moveTo(d.x, d.y);
@@ -82,34 +99,34 @@ function map(){
     }
 
     function drawVehicleAtLink(l){
-        var segments = traffic[l.relationshipId].cells;
-        var tl = trafficLights[l.target.id];
+        let segments = traffic[l.relationshipId].cells;
+        let tl = trafficLights[l.target.id];
 
-        var source_x = l.source.x,
+        let source_x = l.source.x,
             source_y = l.source.y,
             target_x = l.target.x,
             target_y = l.target.y;
 
-        var diff_x = target_x - source_x;
-        var diff_Y = target_y - source_y;
+        let diff_x = target_x - source_x;
+        let diff_Y = target_y - source_y;
 
-        var inc_x = diff_x/segments;
-        var inc_Y = diff_Y/segments;
+        let inc_x = diff_x/segments;
+        let inc_Y = diff_Y/segments;
 
         //draw traffic light
         if(tl) {
             ctx.beginPath();
             console.log(tl);
             console.log(tl.tlsstate);
-            var sec = -1;
-            for(var i = 0; i < tl.inLinks.length; i++){
-                if(tl.inLinks[i] == l.relationshipId){
+            let sec = -1;
+            for(let i = 0; i < tl.inLinks.length; i++){
+                if(tl.inLinks[i] === l.relationshipId){
                     sec = i;
                     break;
                 }
             }
 
-            if(sec != -1){
+            if(sec !== -1){
                 switch (tl.tlsstate.state[sec*tl.outLinks.length]){
                     case "GREEN":
                         ctx.fillStyle = "#00a80e";
@@ -129,7 +146,7 @@ function map(){
             }
         }
 
-        for(var i = 0; i < segments; i++){
+        for(let i = 0; i < segments; i++){
             //draw lane direction visualisation
             if(i === (segments-1) ){
                 ctx.beginPath();
@@ -140,7 +157,7 @@ function map(){
                 ctx.stroke();
             }
             //draw vehicle
-            var vehicle = traffic[l.relationshipId].traffic[i];
+            let vehicle = traffic[l.relationshipId].traffic[i];
             if(vehicle != null){
                 ctx.beginPath();
                 ctx.fillStyle = "#f5ef42";

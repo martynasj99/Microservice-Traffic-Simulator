@@ -26,12 +26,14 @@ public class Vehicle {
     private VehicleRoute route;
     private int speed;
     private int progress;
+    private int vision;
     private int streetProgress;
     private String notificationUri;
     private Action nextAction;
 
     public Vehicle() {
         this.progress = 2;
+        this.vision = 2;
     }
 
     public void nextStage(){
@@ -167,4 +169,11 @@ public class Vehicle {
         getRoute().setPath(path);
     }
 
+    public int getVision() {
+        return vision;
+    }
+
+    public void setVision(int vision) {
+        this.vision = vision;
+    }
 }

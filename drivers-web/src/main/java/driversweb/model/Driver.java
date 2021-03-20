@@ -17,7 +17,7 @@ public class Driver {
         else if(state.isHasArrived() ) action.setType("wait");
         else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
         else if(state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() > 0) action.setType("enter");
-        else if(state.getVehicleSpeed() == 0 && canAccelerate(state)) action.setType("accelerate");
+        else if(state.getVehicleSpeed() < state.getStreetSpeed() && canAccelerate(state)) action.setType("accelerate");
         else if( state.getVehicleSpeed() >= 1 && shouldSlowDown(state)) action.setType("decelerate");
         else if(!state.isAtIntersection() && state.getVehicleSpeed() > 0) action.setType("move");
         else action.setType("wait");

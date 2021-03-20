@@ -114,7 +114,7 @@ public class VehicleService {
     }
 
     public boolean observeAhead(Vehicle vehicle, Traffic traffic){
-        for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + 2; i++) {
+        for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + vehicle.getVision(); i++) {
             if( (traffic.getTraffic()[i] != null || i == traffic.getCells()-1) && vehicle.getSpeed() > 1)
                 return true;
         }

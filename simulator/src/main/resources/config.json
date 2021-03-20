@@ -516,6 +516,28 @@
       "target": {
         "name": "H4"
       }
+    },
+    {
+      "name": "S31",
+      "length": 100,
+      "maxSpeed": 5,
+      "source": {
+        "name": "J10"
+      },
+      "target": {
+        "name": "J14"
+      }
+    },
+    {
+      "name": "S32",
+      "length": 100,
+      "maxSpeed": 5,
+      "source": {
+        "name": "J14"
+      },
+      "target": {
+        "name": "J10"
+      }
     }
   ]
 

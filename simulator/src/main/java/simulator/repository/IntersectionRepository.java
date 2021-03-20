@@ -23,6 +23,4 @@ public interface IntersectionRepository extends Neo4jRepository<Intersection, Lo
     @Query("CREATE (:Intersection { name: $0, type: $1 })")
     void createNode(String name, String type);
 
-
-
 }

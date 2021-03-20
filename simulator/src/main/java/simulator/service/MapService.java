@@ -19,6 +19,7 @@ import simulator.repository.IntersectionRepository;
 import simulator.repository.StreetRepository;
 import simulator.utils.PathGenerator;
 
+import javax.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,18 +44,24 @@ public class MapService {
 
     private boolean safeMode;
 
-    public void configure(Configuration configuration){
+    public void configure(Configuration configuration) throws InvalidException{
         intersectionRepository.deleteAll();
+
         this.safeMode = configuration.isSafeMode();
 
-        for(Intersection intersection : configuration.getIntersections())
-            intersectionRepository.createNode(intersection.getName(), intersection.getType());
+        for(Intersection intersection : configuration.getIntersections()) {
+            if(intersectionRepository.findByName(intersection.getName()).orElse(null) == null)
+                intersectionRepository.createNode(intersection.getName(), intersection.getType());
+            else
+                throw new InvalidException("Duplicate name: " + intersection.getName());
+        }
 
         for(Street street : configuration.getStreets())
             streetRepository.createStreet(street.getSource(), street.getTarget(), street.getName(), street.getLength(), street.getMaxSpeed());
 
         for (Vehicle vehicle : vehicleService.getVehicles())
             generateVehiclePath(vehicle);
+
 
         locationService.updateLocations();
         locationService.initTraffic();

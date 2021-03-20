@@ -1,6 +1,7 @@
 package simulator.model.action;
 
 import simulator.exception.InvalidActionException;
+import simulator.model.Action;
 import simulator.service.ServiceContext;
 import simulator.model.Vehicle;
 
@@ -12,6 +13,7 @@ public class AccelerateExecutor implements ActionExecutor {
     public boolean execute(Vehicle vehicle, ServiceContext serviceContext, List<String> parameters) {
         if(vehicle.getCurrentStreet() == null) throw new InvalidActionException("This vehicle cannot perform this action: " + vehicle.getNextAction());
         vehicle.accelerate();
+        vehicle.execute(serviceContext, new Action("move"));
         return true;
     }
 
