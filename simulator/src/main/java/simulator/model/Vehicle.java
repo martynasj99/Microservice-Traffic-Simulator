@@ -32,8 +32,9 @@ public class Vehicle {
     private Action nextAction;
 
     public Vehicle() {
+        this.speed = 1;
         this.progress = 2;
-        this.vision = 2;
+        this.vision = 5;
     }
 
     public void nextStage(){

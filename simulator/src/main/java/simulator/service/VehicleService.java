@@ -92,7 +92,7 @@ public class VehicleService {
                 environmentState.setIntersectionMaxCapacity(next.getCapacity());
                 environmentState.setTrafficLightStatus(checkTrafficLightStatus(vehicle.getCurrentStreet()));
             }else{
-                environmentState.setTrafficAhead(traffic.getTraffic()[vehicle.getStreetProgress()+1] != null);
+                environmentState.setTrafficAhead(observeTrafficAhead(vehicle, traffic));
                 environmentState.setTrafficInVision(observeAhead(vehicle, traffic));
             }
         }
@@ -117,7 +117,15 @@ public class VehicleService {
 
     public boolean observeAhead(Vehicle vehicle, Traffic traffic){
         for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + vehicle.getVision(); i++) {
-            if( (traffic.getTraffic()[i] != null || i == traffic.getCells()-1) && vehicle.getSpeed() > 1)
+            if( (traffic.getTraffic()[i] != null || (i == traffic.getCells()-1  )))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean observeTrafficAhead(Vehicle vehicle, Traffic traffic){
+        for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + vehicle.getSpeed(); i++) {
+            if( (traffic.getTraffic()[i] != null || (i == traffic.getCells()-1) ) )
                 return true;
         }
         return false;

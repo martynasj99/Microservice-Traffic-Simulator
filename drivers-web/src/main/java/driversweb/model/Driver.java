@@ -17,8 +17,8 @@ public class Driver {
         else if(state.isHasArrived() ) action.setType("wait");
         else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
         else if(state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 1) action.setType("enter");
-        else if(state.getVehicleSpeed() < state.getStreetSpeed() && canAccelerate(state)) action.setType("accelerate");
         else if( state.getVehicleSpeed() >= 1 && shouldSlowDown(state)) action.setType("decelerate");
+        else if( canAccelerate(state) && !state.isTrafficInVision()) action.setType("accelerate");
         else if(!state.isAtIntersection() && state.getVehicleSpeed() > 0) action.setType("move");
         else action.setType("wait");
 
@@ -30,12 +30,12 @@ public class Driver {
                 && (state.getIntersectionCurrentCapacity() < state.getIntersectionMaxCapacity());
     }
     private boolean shouldSlowDown(EnvironmentState state){
-        return state.isTrafficAhead() || (state.isTrafficInVision() && state.getVehicleSpeed() > 1) || (state.isAtLastCell() && !canEnterIntersection(state));
+        return (state.isTrafficAhead() && state.getVehicleSpeed() > 1) || (state.isAtLastCell() && (!canEnterIntersection(state) || state.getVehicleSpeed() > 1 ));
     }
 
     private boolean canAccelerate(EnvironmentState state){
-        return (state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 0)
-                || (!state.isAtLastCell() && !state.isTrafficAhead())
+        return ((state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 0)
+                || (!state.isAtLastCell() && !state.isTrafficAhead()))
                 && state.getVehicleSpeed() < state.getStreetSpeed();
     }
 

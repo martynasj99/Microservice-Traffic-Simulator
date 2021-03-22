@@ -8,8 +8,7 @@
         "startNode": "J10",
         "endNode": "H1"
       },
-      "currentNode": "J10",
-      "speed": 1
+      "currentNode": "J10"
     },
     {
       "id": 2,
@@ -18,8 +17,7 @@
         "startNode": "J1",
         "endNode": "H2"
       },
-      "currentNode": "J1",
-      "speed": 1
+      "currentNode": "J1"
     },
 
     {
@@ -28,8 +26,7 @@
       "currentNode": "W1",
       "route": {
         "startNode": "W1"
-      },
-      "speed": 1
+      }
     },
     {
       "id": 4,
@@ -38,8 +35,7 @@
         "startNode": "W1",
         "endNode": "H1"
       },
-      "currentNode": "W1",
-      "speed": 1
+      "currentNode": "W1"
     },
     {
       "id": 5,
@@ -48,8 +44,7 @@
         "startNode": "W1",
         "endNode": "H1"
       },
-      "currentNode": "W1",
-      "speed": 1
+      "currentNode": "W1"
     },
     {
       "id": 6,
@@ -58,8 +53,7 @@
         "startNode": "J2",
         "endNode": "H3"
       },
-      "currentNode": "W1",
-      "speed": 1
+      "currentNode": "W1"
     }
   ],
   "intersections": [
