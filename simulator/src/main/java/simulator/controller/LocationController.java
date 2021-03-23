@@ -28,14 +28,14 @@ public class LocationController {
     }
 
     @GetMapping("/nodes")
-    public Map<Long, List<Vehicle>> getVehicleAtLocation(){
+    public Map<String, List<Vehicle>> getVehicleAtLocation(){
         return locationService.getVehiclesAtNodes();
     }
 
     @CrossOrigin(origins = "http://localhost:8080")
     @MessageMapping("/nodes")
     @GetMapping("/nodes/number")
-    public Map<Long, Integer> getNumberAtNodes(){
+    public Map<String, Integer> getNumberAtNodes(){
         return locationService.getNumberOfVehiclesAtNode();
     }
 

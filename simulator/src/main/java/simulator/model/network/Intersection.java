@@ -1,5 +1,6 @@
 package simulator.model.network;
 
+import org.neo4j.graphdb.Node;
 import org.neo4j.ogm.annotation.*;
 import org.springframework.stereotype.Indexed;
 
@@ -9,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NodeEntity
-public class Intersection{
+public class Intersection {
 
     @Id @GeneratedValue
     private Long id;

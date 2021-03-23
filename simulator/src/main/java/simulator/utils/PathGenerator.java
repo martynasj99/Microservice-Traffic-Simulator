@@ -1,8 +1,13 @@
 package simulator.utils;
 
 import org.neo4j.driver.internal.InternalPath;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.neo4j.graphalgo.GraphAlgoFactory;
+import org.neo4j.graphalgo.PathFinder;
+import org.neo4j.graphalgo.WeightedPath;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.PathExpanders;
 import simulator.repository.IntersectionRepository;
 
 import javax.persistence.Entity;
@@ -22,19 +27,23 @@ public class PathGenerator {
      * @return A list consisting of the names of the nodes.
      */
     public List<String> generatePath(String startNode, String toNode, IntersectionRepository intersectionRepository){
-        System.out.println("START");
         List<String> path = new ArrayList<>();
         Iterable<Map<String, Object>> results = intersectionRepository.findShortestPath(startNode, toNode);
         for(Map<String, Object> paths : results){
-            System.out.println("PATH");
             InternalPath.SelfContainedSegment[] connections = (InternalPath.SelfContainedSegment[]) paths.get("p");
             path = new ArrayList<>();
             path.add(startNode);
             for(InternalPath.SelfContainedSegment connection : connections){
                 path.add(connection.end().get("name").toString().replaceAll("^\"+|\"+$", ""));
             }
-            System.out.println(path);
         }
         return path;
+
     }
+
+/*    public Path getPath(String startNode, String toNode, IntersectionRepository intersectionRepository){
+        PathFinder<WeightedPath> finder = GraphAlgoFactory.dijkstra(PathExpanders.allTypesAndDirections(), "length");
+
+        return finder.findSinglePath((Node) intersectionRepository.findByName(startNode).get(), (Node) intersectionRepository.findByName(toNode).get());
+    }*/
 }

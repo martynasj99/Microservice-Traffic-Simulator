@@ -24,8 +24,9 @@ public class EnvironmentState {
     private boolean hasArrived;
     private boolean hasEndNode;
 
-    private boolean trafficInVision;
-    private boolean trafficAhead;
+    private boolean vehicleAhead;
+    private boolean obstacleInVision;
+    private boolean obstacleAhead;
 
     private boolean canLeave;
 
@@ -135,20 +136,28 @@ public class EnvironmentState {
         this.numberAtIntersection = numberAtIntersection;
     }
 
-    public boolean isTrafficInVision() {
-        return trafficInVision;
+    public boolean isVehicleAhead() {
+        return vehicleAhead;
     }
 
-    public void setTrafficInVision(boolean trafficInVision) {
-        this.trafficInVision = trafficInVision;
+    public void setVehicleAhead(boolean vehicleAhead) {
+        this.vehicleAhead = vehicleAhead;
     }
 
-    public boolean isTrafficAhead() {
-        return trafficAhead;
+    public boolean isObstacleInVision() {
+        return obstacleInVision;
     }
 
-    public void setTrafficAhead(boolean trafficAhead) {
-        this.trafficAhead = trafficAhead;
+    public void setObstacleInVision(boolean obstacleInVision) {
+        this.obstacleInVision = obstacleInVision;
+    }
+
+    public boolean isObstacleAhead() {
+        return obstacleAhead;
+    }
+
+    public void setObstacleAhead(boolean obstacleAhead) {
+        this.obstacleAhead = obstacleAhead;
     }
 
     public boolean isCanLeave() {
@@ -192,8 +201,9 @@ public class EnvironmentState {
                 ", atLastCell=" + atLastCell +
                 ", hasArrived=" + hasArrived +
                 ", hasEndNode=" + hasEndNode +
-                ", trafficInVision=" + trafficInVision +
-                ", trafficAhead=" + trafficAhead +
+                ", vehicleAhead=" + vehicleAhead +
+                ", obstacleInVision=" + obstacleInVision +
+                ", obstacleAhead=" + obstacleAhead +
                 ", canLeave=" + canLeave +
                 ", possibleActions=" + possibleActions +
                 '}';

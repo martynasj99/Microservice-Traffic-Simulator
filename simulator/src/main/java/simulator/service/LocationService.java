@@ -30,17 +30,16 @@ public class LocationService {
      * Depends on the vehicles being up to date in the vehicle service
      */
     public void updateLocations(){
-        Map<Long, List<Vehicle>> vehicleNodeLocations = new Hashtable<>(); //INTERSECTION ID -> LIST[DRIVERS]
-        Map<Long, Integer> numberOfVehiclesAtNode = new Hashtable<>(); //INTERSECTION ID -> NUMBER OF DRIVERS AT THAT INTERSECTION
+        Map<String, List<Vehicle>> vehicleNodeLocations = new Hashtable<>(); //INTERSECTION ID -> LIST[DRIVERS]
+        Map<String, Integer> numberOfVehiclesAtNode = new Hashtable<>(); //INTERSECTION ID -> NUMBER OF DRIVERS AT THAT INTERSECTION
         for(Vehicle vehicle : vehicleService.getVehicles()) {
             if (vehicle.getCurrentNode() != null) {
-                Long intersection_id = mapService.getIntersectionByName(vehicle.getCurrentNode()).getId();
-                List<Vehicle> vehicles = vehicleNodeLocations.getOrDefault(intersection_id, new ArrayList<>());
+                List<Vehicle> vehicles = vehicleNodeLocations.getOrDefault(vehicle.getCurrentNode(), new ArrayList<>());
                 vehicles.add(vehicle);
-                vehicleNodeLocations.put(intersection_id, vehicles);
+                vehicleNodeLocations.put(vehicle.getCurrentNode(), vehicles);
             }
         }
-        for(Long id : vehicleNodeLocations.keySet()) numberOfVehiclesAtNode.put(id, vehicleNodeLocations.get(id).size());
+        for(String name : vehicleNodeLocations.keySet()) numberOfVehiclesAtNode.put(name, vehicleNodeLocations.get(name).size());
 
         locationView.setVehiclesAtNodes(vehicleNodeLocations);
         locationView.setNumberOfVehiclesAtNodes(numberOfVehiclesAtNode);
@@ -50,11 +49,11 @@ public class LocationService {
         return locationView;
     }
 
-    public Map<Long, Integer> getNumberOfVehiclesAtNode(){
+    public Map<String, Integer> getNumberOfVehiclesAtNode(){
         return locationView.getNumberOfVehiclesAtNodes();
     }
 
-    public Map<Long, List<Vehicle>> getVehiclesAtNodes(){
+    public Map<String, List<Vehicle>> getVehiclesAtNodes(){
         return locationView.getVehiclesAtNodes();
     }
 
@@ -77,6 +76,4 @@ public class LocationService {
     public Map<Long, Traffic> getTraffic(){
         return locationView.getTrafficAtStreet();
     }
-
-
 }

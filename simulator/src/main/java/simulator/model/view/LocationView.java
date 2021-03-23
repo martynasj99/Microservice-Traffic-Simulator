@@ -6,8 +6,8 @@ import simulator.model.Vehicle;
 import java.util.*;
 
 public class LocationView {
-    private Map<Long, List<Vehicle>> vehiclesAtNodes;
-    private Map<Long, Integer> numberOfVehiclesAtNodes;
+    private Map<String, List<Vehicle>> vehiclesAtNodes;
+    private Map<String, Integer> numberOfVehiclesAtNodes;
     private Map<Long, Traffic> trafficAtStreet;
     private Map<String, Queue<Vehicle>> waitingToLeave;
 
@@ -15,19 +15,19 @@ public class LocationView {
         waitingToLeave = new HashMap<>();
     }
 
-    public Map<Long, List<Vehicle>> getVehiclesAtNodes() {
+    public Map<String, List<Vehicle>> getVehiclesAtNodes() {
         return vehiclesAtNodes;
     }
 
-    public void setVehiclesAtNodes(Map<Long, List<Vehicle>> vehiclesAtNodes) {
+    public void setVehiclesAtNodes(Map<String, List<Vehicle>> vehiclesAtNodes) {
         this.vehiclesAtNodes = vehiclesAtNodes;
     }
 
-    public Map<Long, Integer> getNumberOfVehiclesAtNodes() {
+    public Map<String, Integer> getNumberOfVehiclesAtNodes() {
         return numberOfVehiclesAtNodes;
     }
 
-    public void setNumberOfVehiclesAtNodes(Map<Long, Integer> numberOfVehiclesAtNodes) {
+    public void setNumberOfVehiclesAtNodes(Map<String, Integer> numberOfVehiclesAtNodes) {
         this.numberOfVehiclesAtNodes = numberOfVehiclesAtNodes;
     }
 

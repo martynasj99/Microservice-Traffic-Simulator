@@ -17,18 +17,6 @@ function map(){
     graph = webSocket3.data;
 
     let canvas = d3.select("#network");
-/*
-
-    console.log("maxX " + maxX);
-    console.log("maxY " + maxY);
-/!*    if(maxX > canvas.attr("width")) $("#network").attr("width", maxX);
-    if(maxY > canvas.attr("height")) $("#network").attr("height", maxY);*!/
-    d3.select(window)
-        .on("resize", function() {
-            $("#network").attr("width", maxX);
-            $("#network").attr("height", maxY);
-        });
-*/
 
     let width = canvas.attr("width"),
         height = canvas.attr("height"),
@@ -87,7 +75,7 @@ function map(){
     }
 
     function drawVehicleAtNode(d){
-        let num = locations[d.id];
+        let num = locations[d.name];
 
         for(let i = 0; i < num; i++){
             ctx.beginPath();

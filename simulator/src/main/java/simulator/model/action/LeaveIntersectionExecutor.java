@@ -13,6 +13,8 @@ public class LeaveIntersectionExecutor implements ActionExecutor {
         Long currentStreetId = serviceContext.mapService.getStreetBetweenTwoIntersections(vehicle.getCurrentNode(), vehicle.getNextNode()).getRelationshipId();
         Traffic traffic = serviceContext.locationService.getTraffic().get(currentStreetId);
 
+        if (!isActionSafe(vehicle, serviceContext, traffic)) return false;
+
         traffic.getTraffic()[0] = vehicle;
         serviceContext.locationService.getLocations().getWaitingToLeave().get(vehicle.getCurrentNode()).poll();
 
@@ -20,6 +22,17 @@ public class LeaveIntersectionExecutor implements ActionExecutor {
         vehicle.setCurrentStreet(currentStreetId);
         serviceContext.locationService.updateOnAction(vehicle, traffic, vehicle.getCurrentStreet());
 
+        return true;
+    }
+
+    private boolean isActionSafe(Vehicle vehicle, ServiceContext serviceContext, Traffic traffic) {
+        if(traffic.getTraffic()[0] != null) {
+            if(serviceContext.mapService.isSafeMode()){
+                return false;
+            }else{
+                serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+            }
+        }
         return true;
     }
 }

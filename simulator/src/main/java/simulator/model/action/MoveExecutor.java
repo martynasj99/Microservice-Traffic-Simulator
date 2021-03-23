@@ -20,10 +20,22 @@ public class MoveExecutor implements ActionExecutor {
         Traffic traffic = serviceContext.locationService.getTraffic().get(vehicle.getCurrentStreet());
 
         for (int i = 0; i < vehicle.getSpeed(); i++) {
+            if (!isActionSafe(vehicle, serviceContext, traffic)) return false;
             traffic.getTraffic()[vehicle.getStreetProgress() + 1] = traffic.getTraffic()[vehicle.getStreetProgress()];
             traffic.getTraffic()[vehicle.getStreetProgress()] = null;
             vehicle.setStreetProgress(vehicle.getStreetProgress() + 1);
             serviceContext.locationService.updateOnAction(vehicle, traffic, vehicle.getCurrentStreet());
+        }
+        return true;
+    }
+
+    private boolean isActionSafe(Vehicle vehicle, ServiceContext serviceContext, Traffic traffic) {
+        if(traffic.getTraffic()[vehicle.getStreetProgress() + 1] != null) {
+            if(serviceContext.mapService.isSafeMode()){
+                return false;
+            }else{
+                serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+            }
         }
         return true;
     }

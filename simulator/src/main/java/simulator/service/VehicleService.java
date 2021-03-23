@@ -88,12 +88,13 @@ public class VehicleService {
             if (vehicle.getStreetProgress() == locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells() - 1) {
                 Intersection next = mapService.getIntersectionByName(vehicle.getNextNode());
                 environmentState.setAtLastCell(true);
-                environmentState.setIntersectionCurrentCapacity(locationService.getLocations().getNumberOfVehiclesAtNodes().getOrDefault(next.getId(), 0));
+                environmentState.setIntersectionCurrentCapacity(locationService.getLocations().getNumberOfVehiclesAtNodes().getOrDefault(next.getName(), 0));
                 environmentState.setIntersectionMaxCapacity(next.getCapacity());
                 environmentState.setTrafficLightStatus(checkTrafficLightStatus(vehicle.getCurrentStreet()));
             }else{
-                environmentState.setTrafficAhead(observeTrafficAhead(vehicle, traffic));
-                environmentState.setTrafficInVision(observeAhead(vehicle, traffic));
+                environmentState.setVehicleAhead(locationService.getTraffic().get(vehicle.getCurrentStreet()).getTraffic()[vehicle.getStreetProgress()+1] != null);
+                environmentState.setObstacleInVision(observeAhead(vehicle, traffic, vehicle.getVision()));
+                environmentState.setObstacleAhead(observeAhead(vehicle, traffic, vehicle.getSpeed()));
             }
         }
         else if(vehicle.getCurrentNode() != null) {
@@ -103,7 +104,6 @@ public class VehicleService {
                 Traffic traffic = locationService.getTraffic().get(currentStreetId);
 
                 Queue<Vehicle> waiting = locationService.getLocations().getWaitingToLeave().getOrDefault(vehicle.getCurrentNode(), new LinkedList<>());
-
                 if(!waiting.contains(vehicle)) waiting.add(vehicle);
                 else environmentState.setCanLeave(waiting.peek().equals(vehicle) && traffic.getTraffic()[0] == null);
 
@@ -115,21 +115,15 @@ public class VehicleService {
         return environmentState;
     }
 
-    public boolean observeAhead(Vehicle vehicle, Traffic traffic){
-        for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + vehicle.getVision(); i++) {
+    private boolean observeAhead(Vehicle vehicle, Traffic traffic, int range){
+        for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + range; i++) {
             if( (traffic.getTraffic()[i] != null || (i == traffic.getCells()-1  )))
                 return true;
         }
         return false;
     }
 
-    public boolean observeTrafficAhead(Vehicle vehicle, Traffic traffic){
-        for (int i = vehicle.getStreetProgress()+1; i < traffic.getCells() && i  <= vehicle.getStreetProgress() + vehicle.getSpeed(); i++) {
-            if( (traffic.getTraffic()[i] != null || (i == traffic.getCells()-1) ) )
-                return true;
-        }
-        return false;
-    }
+
 
     public boolean checkTrafficLightStatus(Long fromId){
         return mapService.getTrafficLightStatus().getOrDefault(fromId, true);

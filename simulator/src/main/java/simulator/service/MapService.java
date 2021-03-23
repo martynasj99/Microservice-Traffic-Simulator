@@ -159,4 +159,8 @@ public class MapService {
     public void setTrafficLightStatus(Map<Long, Boolean> trafficLightStatus){
         this.trafficLightStatus = trafficLightStatus;
     }
+
+    public boolean isSafeMode() {
+        return safeMode;
+    }
 }
