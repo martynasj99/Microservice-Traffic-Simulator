@@ -24,7 +24,7 @@ public class EnterIntersectionExecutor implements ActionExecutor {
     }
 
     private boolean isActionSafe(Vehicle vehicle, ServiceContext serviceContext){
-        if(serviceContext.locationService.getLocations().getNumberOfVehiclesAtNodes().get(vehicle.getNextNode()) >= serviceContext.mapService.getIntersectionByName(vehicle.getNextNode()).getCapacity()){
+        if(serviceContext.locationService.getLocations().getNumberOfVehiclesAtNodes().getOrDefault(vehicle.getNextNode(), 0) >= serviceContext.mapService.getIntersectionByName(vehicle.getNextNode()).getCapacity()){
             if(serviceContext.mapService.isSafeMode()){
                 return false;
             }else{

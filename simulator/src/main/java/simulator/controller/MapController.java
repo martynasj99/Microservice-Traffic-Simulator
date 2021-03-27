@@ -3,6 +3,7 @@ package simulator.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
+import simulator.Configuration;
 import simulator.model.*;
 import simulator.model.network.Intersection;
 import simulator.model.network.Street;

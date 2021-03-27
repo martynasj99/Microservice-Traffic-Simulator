@@ -89,8 +89,13 @@ public class MapService {
         return intersectionRepository.findById(id).orElse(null);
     }
 
-    public Intersection getIntersectionByName(String name){
-        return intersectionRepository.findByName(name).orElse(null);
+    public Intersection getIntersectionByName(String name) {
+        try{
+            return intersectionRepository.findByName(name).orElseThrow(() -> new IntersectionNotFoundException("Intersection: " + name + " not found"));
+        }catch (IntersectionNotFoundException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Street getStreetById(Long id){

@@ -16,6 +16,7 @@ import trafficlight.service.TrafficLightService;
 @RestController
 public class StepController {
 
+
     private RestTemplate template = new RestTemplate();
 
     @Autowired

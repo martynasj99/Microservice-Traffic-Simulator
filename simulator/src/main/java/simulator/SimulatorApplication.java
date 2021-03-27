@@ -37,21 +37,10 @@ public class SimulatorApplication {
     }
 
     @Bean
-    CommandLineRunner demo(IntersectionRepository intersectionRepository) {
+    CommandLineRunner initial(IntersectionRepository intersectionRepository) {
         return args -> {
             log.debug("---Starting---");
             intersectionRepository.deleteAll();
-
-            ObjectMapper mapper = new ObjectMapper();
-            InputStream in = getClass().getResourceAsStream("/config.json");
-            Configuration configuration = mapper.readValue(in, Configuration.class);
-
-            for(Vehicle vehicle : configuration.getVehicles()){
-                vehicleService.addVehicle(vehicle);
-            }
-
-            mapService.configure(configuration);
-            mapService.generateTrafficLights();
 
             JSONObject registration = new JSONObject();
             registration.put("name", "simulator");
