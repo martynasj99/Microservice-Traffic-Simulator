@@ -3,6 +3,7 @@ package simulator.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -76,14 +77,12 @@ public class VehicleService {
         environmentState.setId(vehicle.getId().intValue());
         environmentState.setTime(informationService.getTime());
         environmentState.setVehicleSpeed(vehicle.getSpeed());
-        environmentState.setVehicleStreetProgress(vehicle.getStreetProgress());
         environmentState.setHasEndNode(vehicle.getEndNode() != null);
         environmentState.setHasArrived(vehicle.hasArrived());
 
         if(vehicle.getCurrentStreet() != null){
             Traffic traffic = locationService.getTraffic().get(vehicle.getCurrentStreet());
             environmentState.setStreetSpeed(mapService.getStreetById(vehicle.getCurrentStreet()).getMaxSpeed());
-            environmentState.setStreetLength(locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells());
 
             if (vehicle.getStreetProgress() == locationService.getTraffic().get(vehicle.getCurrentStreet()).getCells() - 1) {
                 Intersection next = mapService.getIntersectionByName(vehicle.getNextNode());
@@ -140,7 +139,8 @@ public class VehicleService {
 
         logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + vehicle.getId());
         String uri = vehicle.getNotificationUri();
-        template.postForObject(uri, request, Void.class);
+        //template.postForObject(uri, request, Void.class);
+        template.exchange(uri, HttpMethod.PUT, request, Void.class);
         logger.info(" Notification Sent : "+state.getId()+" sent from : " + vehicle.getId());
     }
 }

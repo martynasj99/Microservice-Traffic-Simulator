@@ -19,9 +19,10 @@ agent Main extends mams.PassiveMAMSAgent {
         int NUM = tc.stringToInt(content);
         int X = 1;
         while(X < NUM+1){
+            cartago.println("Driver " + X);
             S.createAgent(""+X, "Driver");
             S.sleep(1000);
-            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/states\"}", int code1, string content1);
+            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/state\"}", int code1, string content1);
             X = X+1;
         }
     }

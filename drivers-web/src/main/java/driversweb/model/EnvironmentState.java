@@ -7,12 +7,9 @@ public class EnvironmentState {
     private int id;
     private String time;
 
-    private int vehicleStreetProgress;
-    private int streetLength;
     private int vehicleSpeed;
     private int streetSpeed;
     private boolean trafficLightStatus;
-    private int numberAtIntersection;
 
     private int intersectionCurrentCapacity;
     private int intersectionMaxCapacity;
@@ -44,22 +41,6 @@ public class EnvironmentState {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public int getVehicleStreetProgress() {
-        return vehicleStreetProgress;
-    }
-
-    public void setVehicleStreetProgress(int vehicleStreetProgress) {
-        this.vehicleStreetProgress = vehicleStreetProgress;
-    }
-
-    public int getStreetLength() {
-        return streetLength;
-    }
-
-    public void setStreetLength(int streetLength) {
-        this.streetLength = streetLength;
     }
 
     public int getVehicleSpeed() {
@@ -126,14 +107,6 @@ public class EnvironmentState {
         this.hasArrived = hasArrived;
     }
 
-    public int getNumberAtIntersection() {
-        return numberAtIntersection;
-    }
-
-    public void setNumberAtIntersection(int numberAtIntersection) {
-        this.numberAtIntersection = numberAtIntersection;
-    }
-
     public boolean isVehicleAhead() {
         return vehicleAhead;
     }
@@ -182,28 +155,4 @@ public class EnvironmentState {
         this.hasEndNode = hasEndNode;
     }
 
-    @Override
-    public String toString() {
-        return "EnvironmentState{" +
-                "id=" + id +
-                ", time='" + time + '\'' +
-                ", vehicleStreetProgress=" + vehicleStreetProgress +
-                ", streetLength=" + streetLength +
-                ", vehicleSpeed=" + vehicleSpeed +
-                ", streetSpeed=" + streetSpeed +
-                ", trafficLightStatus=" + trafficLightStatus +
-                ", numberAtIntersection=" + numberAtIntersection +
-                ", intersectionCurrentCapacity=" + intersectionCurrentCapacity +
-                ", intersectionMaxCapacity=" + intersectionMaxCapacity +
-                ", atIntersection=" + atIntersection +
-                ", atLastCell=" + atLastCell +
-                ", hasArrived=" + hasArrived +
-                ", hasEndNode=" + hasEndNode +
-                ", vehicleAhead=" + vehicleAhead +
-                ", obstacleInVision=" + obstacleInVision +
-                ", obstacleAhead=" + obstacleAhead +
-                ", canLeave=" + canLeave +
-                ", possibleActions=" + possibleActions +
-                '}';
-    }
 }

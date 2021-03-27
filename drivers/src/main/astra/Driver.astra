@@ -7,6 +7,7 @@ agent Driver extends mams.PassiveMAMSAgent {
     module HALConverter hal;
     module Functions F;
     module TypeConversion tc;
+    module ObjectAccess oa;
 
     initial !init();
 
@@ -21,43 +22,48 @@ agent Driver extends mams.PassiveMAMSAgent {
         //system.trace(true);
         MAMSAgent::!init();
         MAMSAgent::!created("base");
-
-
-        PassiveMAMSAgent::!listResource("states", "model.EnvironmentState");
+        +vehicle(tc.stringToInt(system.name()));
+        PassiveMAMSAgent::!itemResource("state", "EnvironmentState");
         console.println("Hello world, " + system.name());
     }
 
-    rule +!handleNewListItemResource(string artifact_name, "model.EnvironmentState"){
-        cartago.println("artifact created: " + artifact_name);
+    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
+        cartago.println("name: " + state);
 
-        PassiveMAMSAgent::!itemProperty(artifact_name, "id", funct id);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "vehicleStreetProgress", funct vehicleStreetProgress);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "streetLength", funct streetLength);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "vehicleSpeed", funct vehicleSpeed);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "streetSpeed", funct streetSpeed);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "trafficLightStatus", funct trafficLightStatus);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "hasVehiclesInNode", funct hasVehiclesInNode);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "intersectionName", funct intersectionName);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "numberAtIntersection", funct numberAtIntersection);
-        PassiveMAMSAgent::!itemProperty(artifact_name, "atIntersection", funct atIntersection);
-     //   PassiveMAMSAgent::!itemProperty(artifact_name, "atLastCell", funct atLastCell);
-        PassiveMAMSAgent::!itemProperty(artifact_name, "hasArrived", funct hasArrived);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "trafficInVision", funct trafficInVision);
-    //    PassiveMAMSAgent::!itemProperty(artifact_name, "trafficAhead", funct trafficAhead);
-        PassiveMAMSAgent::!itemProperty(artifact_name, "canLeave", funct canLeave);
+        boolean hasArrived = oa.getBoolean(state, "hasArrived");
+        boolean atIntersection = oa.getBoolean(state, "atIntersection");
+        boolean canLeave = oa.getBoolean(state, "canLeave");
+        boolean atLastCell = oa.getBoolean(state, "atLastCell");
+        boolean trafficLightStatus = oa.getBoolean(state, "trafficLightStatus");
+        boolean vehicleAhead = oa.getBoolean(state, "vehicleAhead");
+        boolean obstacleAhead = oa.getBoolean(state, "obstacleAhead");
+        boolean obstacleInVision = oa.getBoolean(state, "obstacleInVision");
+        int vehicleSpeed = oa.getInt(state, "vehicleSpeed");
+        int intersectionCurrentCapacity = oa.getInt(state, "intersectionCurrentCapacity");
+        int intersectionMaxCapacity = oa.getInt(state, "intersectionMaxCapacity");
+        int streetSpeed = oa.getInt(state, "streetSpeed");
 
-        string action = "";
+        string action = "wait";
 
-        if(F.valueAsString(hasArrived, 0 ) == "true" ) action = "wait";
-        else if( F.valueAsString(atIntersection, 0) == "true"  & F.valueAsString(canLeave, 0 ) == "true" ) action = "leave";
-  /*      else if( (F.valueAsString(atLastCell, 0) == "true") & (F.valueAsInt(vehicleSpeed, 0) > 0) ) action = "enter"; //+canEnterIntesection
-        else if( F.valueAsInt(vehicleSpeed, 0) == 0 ) action="accelerate"; //+canAccelerate
-        else if( F.valueAsInt(vehicleSpeed, 0) >= 1 ) action="decelerate"; //+shouldSlowDown
-        else if( F.valueAsString(atIntersection, 0 ) == "false") action="move";*/
-        else action = "wait";
+        if(hasArrived == true ) {
+            action = "wait";
+        }
+        else if(atIntersection == true & canLeave == true){
+            action = "leave";
+        }
+        else if( atLastCell == true & vehicleSpeed == 1 & trafficLightStatus == true & intersectionCurrentCapacity < intersectionMaxCapacity ){
+            action = "enter";
+        }
+        else if( (vehicleSpeed > 0 & (vehicleAhead == true | obstacleAhead == true) & (vehicleSpeed > 1 | atLastCell == true) & trafficLightStatus == false & (intersectionCurrentCapacity >= intersectionMaxCapacity  | vehicleSpeed < 2) ) ){
+            action = "decelerate";
+        }
+        /*else if( vehicleSpeed == 0 & ((atLastCell == true & (trafficLightStatus == true & (intersectionCurrentCapacity < intersectionMaxCapacity)))
+            & vehicleSpeed == 0) | (atLastCell == false  & obstacleAhead == false) | (vehicleSpeed == 0 & atLastCell == false & vehicleAhead == false)
+            & vehicleSpeed < streetSpeed & obstacleInVision == false ) action = "accelerate";
+        else if(atIntersection == false & vehicleSpeed > 0) action = "move";*/
+        //else action = "wait";
 
-        cartago.println("action " + action);
-        +vehicle(F.valueAsInt(id));
+        cartago.println("action: " + action);
         !act(action);
     }
 
@@ -66,19 +72,56 @@ agent Driver extends mams.PassiveMAMSAgent {
        !put(uri+"/"+id+"/action", "{\"type\":\""+action+"\"}", int code, string content);
     }
 
+    rule +$cartago.property(string name, id(int t)) {
+    }
+    rule +$cartago.property(string name, time(int t)) {
+    }
+    rule +$cartago.property(string name, vehicleSpeed(int t)) {
+    }
+    rule +$cartago.property(string name, streetSpeed(int t)) {
+    }
+    rule +$cartago.property(string name, trafficLightStatus(boolean t)) {
+    }
+    rule +$cartago.property(string name, intersectionCurrentCapacity(int t)) {
+    }
+    rule +$cartago.property(string name, intersectionMaxCapacity(int t)) {
+    }
+    rule +$cartago.property(string name, atIntersection(boolean t)) {
+    }
+    rule +$cartago.property(string name, atLastCell(boolean t)) {
+    }
+    rule +$cartago.property(string name, hasArrived(boolean t)) {
+    }
+    rule +$cartago.property(string name, hasEndNode(boolean t)) {
+    }
+    rule +$cartago.property(string name, vehicleAhead(boolean t)) {
+    }
+    rule +$cartago.property(string name, obstacleInVision(boolean t)) {
+    }
+    rule +$cartago.property(string name, obstacleAhead(boolean t)) {
+    }
+    rule +$cartago.property(string name, canLeave(boolean t)) {
+    }
 
-    /*    private boolean canEnterIntersection(EnvironmentState state){
-            return state.isTrafficLightStatus()
-                    && (!state.isHasVehiclesInNode() || !state.getIntersectionName().startsWith("J"));
+
+    /*   private boolean canEnterIntersection(EnvironmentState state){
+            return oa.getBoolean(state, "trafficLightStatus") == true
+                    & (oa.getInt(state, "intersectionCurrentCapacity") < oa.getInt(state, "intersectionMaxCapacity"));
         }
         private boolean shouldSlowDown(EnvironmentState state){
-            return state.isTrafficAhead() || (state.isTrafficInVision() && state.getVehicleSpeed() > 1) || (state.isAtLastCell() && !canEnterIntersection(state));
+            return oa.getBoolean(state, "vehicleAhead") == true
+                | (oa.getBoolean(state, "obstacleAhead") == true & oa.getInt(state, "vehicleSpeed") > 1)
+                | (oa.getBoolean(state, "atLastCell") == true
+                & ( (oa.getBoolean(state, "trafficLightStatus") == true
+                & (oa.getInt(state, "intersectionCurrentCapacity") < oa.getInt(state, "intersectionMaxCapacity"))) | state.getVehicleSpeed() > 1 ) == false);
         }
 
         private boolean canAccelerate(EnvironmentState state){
-            return (state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 0)
-                    || (!state.isAtLastCell() && !state.isTrafficAhead())
-                    && state.getVehicleSpeed() < state.getStreetSpeed();
+            return ((oa.getBoolean(state, "atLastCell") == true
+            & (oa.getBoolean(state, "trafficLightStatus") == true & (oa.getInt(state, "intersectionCurrentCapacity") < oa.getInt(state, "intersectionMaxCapacity"))))
+            & oa.getInt(state, "vehicleSpeed") == 0)
+                    || (oa.getBoolean(state, "atLastCell") == false  & oa.getBoolean(state, "obstacleAhead") == false) | (oa.getInt(state, "vehicleSpeed") == 0 && oa.getBoolean(state, "atLastCell") == false & oa.getBoolean(state, "vehicleAhead") == false))
+                    && oa.getInt(state, "vehicleSpeed") < oa.getInt(state, "streetSpeed") && oa.getBoolean(state, "obstacleInVision") == false ;
         }*/
 
 }
