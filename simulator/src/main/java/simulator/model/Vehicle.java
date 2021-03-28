@@ -7,7 +7,7 @@ import simulator.service.ServiceContext;
 import java.util.*;
 
 public class Vehicle {
-    private static Map<String, ActionFactory<?>> executors = new Hashtable<>();
+    private final static Map<String, ActionFactory<?>> executors = new Hashtable<>();
     static {
         executors.put("accelerate", new AccelerateFactory());
         executors.put("decelerate", new DecelerateFactory());

@@ -1,5 +1,11 @@
 package simulator.model.action;
 
+import net.minidev.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 import simulator.exception.InvalidActionException;
 import simulator.service.ServiceContext;
 import simulator.model.Traffic;
@@ -20,6 +26,33 @@ public class EnterIntersectionExecutor implements ActionExecutor {
         vehicle.nextStage();
 
         serviceContext.locationService.updateOnAction(vehicle,traffic, curr);
+        //TRANSFER TO A NEW SIMULATOR
+        if(vehicle.getCurrentNode() != null && serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulator() != null){
+            System.out.println("Transfer");
+                RestTemplate restTemplate = new RestTemplate();
+                JSONObject object = new JSONObject();
+                object.put("notificationUri", vehicle.getNotificationUri());
+                vehicle.setNotificationUri(null);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
+                restTemplate.exchange(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulator(), HttpMethod.PUT, body, Void.class);
+
+        }
+/*        //TRANSFER TO A NEW SIMULATOR
+        if(vehicle.getCurrentNode() != null && serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators() != null){
+            if(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().containsKey(vehicle.getId())){
+                RestTemplate restTemplate = new RestTemplate();
+                JSONObject object = new JSONObject();
+                object.put("notificationUri", vehicle.getNotificationUri());
+                vehicle.setNotificationUri(null);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
+                restTemplate.exchange(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().get(vehicle.getId()), HttpMethod.PUT, body, Void.class);
+            }
+        }*/
+
         return true;
     }
 

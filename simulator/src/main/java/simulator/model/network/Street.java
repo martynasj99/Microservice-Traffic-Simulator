@@ -1,8 +1,6 @@
 package simulator.model.network;
 
 import org.neo4j.ogm.annotation.*;
-import simulator.model.Traffic;
-import simulator.model.network.Intersection;
 
 @RelationshipEntity(type = "STREET")
 public class Street{

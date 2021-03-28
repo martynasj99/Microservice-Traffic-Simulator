@@ -25,23 +25,37 @@ public class DriverController {
     @Autowired
     private DriverService driverService;
 
-    @PutMapping("/{id}/notifications")
-    public void sendAction(@PathVariable Long id, @RequestBody EnvironmentState state){
+    @PutMapping("/{id}/notifications/{type}")
+    public void sendAction(@PathVariable Long id, @PathVariable String type, @RequestBody EnvironmentState state){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Driver driver = driverService.getDrivers().get(id);
-        Action action = driver.generateAction(state);
+        Action action = driver.generateAction(state, type);
 
-        if(!state.getPossibleActions().contains(action.getType())){
+
+/*        if(!state.getPossibleActions().contains(action.getType())){
             logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");
-        }
+        }*/
 
         HttpEntity<Action> body = new HttpEntity<>(action, headers);
 
         logger.info("Sending... " + state.getId() + " " + action.getType());
-        restTemplate.exchange("http://localhost:8081/vehicles/"+id+"/action", HttpMethod.PUT, body, Void.class);
+
+        switch (type){
+            case "traffic":
+                restTemplate.exchange("http://localhost:8081/vehicles/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
+                break;
+            case "home":
+                restTemplate.exchange("http://localhost:8084/homes/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
+                break;
+            default:
+                logger.warning("Invalid type");
+                break;
+        }
+
+
         logger.info("Exiting... " + state.getId());
     }
 }

@@ -25,6 +25,8 @@ public class EnvironmentState {
 
     private boolean canLeave;
 
+    private boolean atHome;
+
     private Set<String> possibleActions;
 
     public int getId() {
@@ -155,4 +157,11 @@ public class EnvironmentState {
         this.hasEndNode = hasEndNode;
     }
 
+    public boolean isAtHome() {
+        return atHome;
+    }
+
+    public void setAtHome(boolean atHome) {
+        this.atHome = atHome;
+    }
 }

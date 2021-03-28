@@ -140,7 +140,7 @@ public class VehicleService {
         logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + vehicle.getId());
         String uri = vehicle.getNotificationUri();
         //template.postForObject(uri, request, Void.class);
-        template.exchange(uri, HttpMethod.PUT, request, Void.class);
+        template.exchange(uri+"/traffic", HttpMethod.PUT, request, Void.class);
         logger.info(" Notification Sent : "+state.getId()+" sent from : " + vehicle.getId());
     }
 }

@@ -16,6 +16,8 @@
         <module>drivers</module>
         <module>drivers-web</module>
         <module>management</module>
-    </modules>
+		<module>home-simulator</module>
+		<module>work-simulator</module>
+	</modules>
 
 </project>

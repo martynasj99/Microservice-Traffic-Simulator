@@ -1,12 +1,8 @@
 package simulator.model.network;
 
-import org.neo4j.graphdb.Node;
 import org.neo4j.ogm.annotation.*;
-import org.springframework.stereotype.Indexed;
-
-
-import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @NodeEntity
@@ -16,7 +12,7 @@ public class Intersection {
     private Long id;
 
     private String name;
-    private Set<String> uris;
+    private String simulator;
     private String type;
     private int capacity;
 
@@ -81,12 +77,12 @@ public class Intersection {
         this.type = type;
     }
 
-    public Set<String> getUris() {
-        return uris;
+    public String getSimulator() {
+        return simulator;
     }
 
-    public void setUris(Set<String> uris) {
-        this.uris = uris;
+    public void setSimulator(String simulator) {
+        this.simulator = simulator;
     }
 
     public int getCapacity() {

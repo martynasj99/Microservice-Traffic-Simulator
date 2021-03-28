@@ -27,7 +27,7 @@ public class DriversApplication {
     }
 
     @Bean
-    CommandLineRunner demo(@Autowired DriverService driverService) {
+    CommandLineRunner initial(@Autowired DriverService driverService) {
         return args -> {
             System.out.println("Running...");
             RestTemplate restTemplate = new RestTemplate();

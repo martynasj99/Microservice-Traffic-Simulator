@@ -33,10 +33,10 @@
       "id": 4,
       "currentStreet": null,
       "route": {
-        "startNode": "W1",
+        "startNode": "J11",
         "endNode": "H1"
       },
-      "currentNode": "W1"
+      "currentNode": "J11"
     },
     {
       "id": 5,
@@ -122,7 +122,8 @@
     {
       "name": "H1",
       "type": "HOME",
-      "capacity": 2
+      "capacity": 2,
+      "simulator":"http://localhost:8084/homes/1"
     },
     {
       "name": "H2",

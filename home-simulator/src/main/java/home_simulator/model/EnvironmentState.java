@@ -1,4 +1,4 @@
-package simulator.model;
+package home_simulator.model;
 
 import java.util.Set;
 
@@ -163,28 +163,5 @@ public class EnvironmentState {
 
     public void setAtHome(boolean atHome) {
         this.atHome = atHome;
-    }
-
-    @Override
-    public String toString() {
-        return "EnvironmentState{" +
-                "id=" + id +
-                ", time='" + time + '\'' +
-                ", vehicleSpeed=" + vehicleSpeed +
-                ", streetSpeed=" + streetSpeed +
-                ", trafficLightStatus=" + trafficLightStatus +
-                ", intersectionCurrentCapacity=" + intersectionCurrentCapacity +
-                ", intersectionMaxCapacity=" + intersectionMaxCapacity +
-                ", atIntersection=" + atIntersection +
-                ", atLastCell=" + atLastCell +
-                ", hasArrived=" + hasArrived +
-                ", hasEndNode=" + hasEndNode +
-                ", vehicleAhead=" + vehicleAhead +
-                ", obstacleInVision=" + obstacleInVision +
-                ", obstacleAhead=" + obstacleAhead +
-                ", canLeave=" + canLeave +
-                ", atHome=" + atHome +
-                ", possibleActions=" + possibleActions +
-                '}';
     }
 }

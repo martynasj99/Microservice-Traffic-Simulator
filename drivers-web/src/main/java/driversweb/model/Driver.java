@@ -7,20 +7,25 @@ public class Driver {
     public Driver() {
     }
 
-    public Action generateAction(EnvironmentState state){
+    public Action generateAction(EnvironmentState state, String type){
         Action action = new Action();
 
-        if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(state.getTime()) ){
-            action.setType("plan");
-            action.setNewDestination(getPlan().getSchedule().get(state.getTime()));
+        if(type.equals("traffic")){
+            if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(state.getTime()) ){
+                action.setType("plan");
+                action.setNewDestination(getPlan().getSchedule().get(state.getTime()));
+            }
+            else if(state.isHasArrived() ) action.setType("wait");
+            else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
+            else if(state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 1) action.setType("enter");
+            else if( state.getVehicleSpeed() >= 1 && shouldSlowDown(state)) action.setType("decelerate");
+            else if( canAccelerate(state) || state.getVehicleSpeed() == 0 ) action.setType("accelerate");
+            else if(!state.isAtIntersection() && state.getVehicleSpeed() > 0 ) action.setType("move");
+            else action.setType("wait");
+        }else if(type.equals("home")){
+            action.setType("watching tv");
         }
-        else if(state.isHasArrived() ) action.setType("wait");
-        else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
-        else if(state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 1) action.setType("enter");
-        else if( state.getVehicleSpeed() >= 1 && shouldSlowDown(state)) action.setType("decelerate");
-        else if( canAccelerate(state) || state.getVehicleSpeed() == 0 ) action.setType("accelerate");
-        else if(!state.isAtIntersection() && state.getVehicleSpeed() > 0 ) action.setType("move");
-        else action.setType("wait");
+
 
         return action;
     }

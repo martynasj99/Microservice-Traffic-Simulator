@@ -14,17 +14,16 @@ import java.util.Map;
 @Service
 public class ConfigurationService {
 
-    public void sendSimulatorConfiguration() throws IOException {
+    public void sendConfiguration(String file, String url) throws IOException{
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ObjectMapper mapper = new ObjectMapper();
-        InputStream in = getClass().getResourceAsStream("/config.json");
+        InputStream in = getClass().getResourceAsStream(file);
         Map<?, ?> object  = mapper.readValue(in, Map.class);
 
-        HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-        template.postForEntity("http://localhost:8081/setup", body, Void.class);
-
+        HttpEntity<Map<?, ?>> body = new HttpEntity<>(object, headers);
+        template.postForEntity(url, body, Void.class);
     }
 }

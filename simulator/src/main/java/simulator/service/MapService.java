@@ -51,7 +51,7 @@ public class MapService {
 
         for(Intersection intersection : configuration.getIntersections()) {
             if(intersectionRepository.findByName(intersection.getName()).orElse(null) == null)
-                intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity());
+                intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity(), intersection.getSimulator());
             else
                 throw new InvalidException("Duplicate name: " + intersection.getName());
         }
@@ -111,7 +111,7 @@ public class MapService {
     }
 
     public void addIntersection(Intersection intersection){
-        intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity());
+        intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity(), intersection.getSimulator());
     }
 
     public void removeIntersection(Intersection intersection){intersectionRepository.delete(intersection);}
