@@ -19,6 +19,7 @@ public class ManagementApplication {
         return args -> {
             configurationService.sendConfiguration("/config.json", "http://localhost:8081/setup");
             configurationService.sendConfiguration("/home.json", "http://localhost:8084/setup");
+            configurationService.sendConfiguration("/drivers.json", "http://localhost:9001/setup");
         };
     }
 

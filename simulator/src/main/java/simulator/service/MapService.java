@@ -50,8 +50,16 @@ public class MapService {
         this.safeMode = configuration.isSafeMode();
 
         for(Intersection intersection : configuration.getIntersections()) {
-            if(intersectionRepository.findByName(intersection.getName()).orElse(null) == null)
-                intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity(), intersection.getSimulator());
+            if(intersectionRepository.findByName(intersection.getName()).orElse(null) == null) {
+                intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity());
+                System.out.println(intersection.getSimulators());
+                Intersection i = intersectionRepository.findByName(intersection.getName()).orElse(null);
+                if(i != null) {
+                    i.setSimulators(intersection.getSimulators());
+                    intersectionRepository.save(i);
+                }
+
+            }
             else
                 throw new InvalidException("Duplicate name: " + intersection.getName());
         }
@@ -111,7 +119,7 @@ public class MapService {
     }
 
     public void addIntersection(Intersection intersection){
-        intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity(), intersection.getSimulator());
+        intersectionRepository.createNode(intersection.getName(), intersection.getType(), intersection.getCapacity());
     }
 
     public void removeIntersection(Intersection intersection){intersectionRepository.delete(intersection);}

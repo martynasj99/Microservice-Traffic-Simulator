@@ -2,6 +2,7 @@ package driversweb.model;
 
 public class Driver {
 
+    private Long id;
     private DayPlan plan;
 
     public Driver() {
@@ -44,6 +45,13 @@ public class Driver {
                 && state.getVehicleSpeed() < state.getStreetSpeed() && !state.isObstacleInVision() ;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public DayPlan getPlan() {
         return plan;

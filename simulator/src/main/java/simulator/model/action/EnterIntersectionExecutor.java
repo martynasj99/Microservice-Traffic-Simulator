@@ -26,22 +26,10 @@ public class EnterIntersectionExecutor implements ActionExecutor {
         vehicle.nextStage();
 
         serviceContext.locationService.updateOnAction(vehicle,traffic, curr);
-        //TRANSFER TO A NEW SIMULATOR
-        if(vehicle.getCurrentNode() != null && serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulator() != null){
-            System.out.println("Transfer");
-                RestTemplate restTemplate = new RestTemplate();
-                JSONObject object = new JSONObject();
-                object.put("notificationUri", vehicle.getNotificationUri());
-                vehicle.setNotificationUri(null);
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-                restTemplate.exchange(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulator(), HttpMethod.PUT, body, Void.class);
 
-        }
-/*        //TRANSFER TO A NEW SIMULATOR
+        //TRANSFER TO A NEW SIMULATOR
         if(vehicle.getCurrentNode() != null && serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators() != null){
-            if(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().containsKey(vehicle.getId())){
+            if(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().containsKey(vehicle.getId().toString())){
                 RestTemplate restTemplate = new RestTemplate();
                 JSONObject object = new JSONObject();
                 object.put("notificationUri", vehicle.getNotificationUri());
@@ -49,9 +37,9 @@ public class EnterIntersectionExecutor implements ActionExecutor {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-                restTemplate.exchange(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().get(vehicle.getId()), HttpMethod.PUT, body, Void.class);
+                restTemplate.exchange(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().get(vehicle.getId().toString()), HttpMethod.PUT, body, Void.class);
             }
-        }*/
+        }
 
         return true;
     }

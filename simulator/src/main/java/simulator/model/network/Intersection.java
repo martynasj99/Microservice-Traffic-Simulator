@@ -1,6 +1,8 @@
 package simulator.model.network;
 
 import org.neo4j.ogm.annotation.*;
+
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +14,10 @@ public class Intersection {
     private Long id;
 
     private String name;
-    private String simulator;
+
+    @Properties(allowCast = true)
+    private Map<String, String> simulators = new HashMap<>(); // Long id -> transfer
+
     private String type;
     private int capacity;
 
@@ -77,12 +82,12 @@ public class Intersection {
         this.type = type;
     }
 
-    public String getSimulator() {
-        return simulator;
+    public Map<String, String> getSimulators() {
+        return simulators;
     }
 
-    public void setSimulator(String simulator) {
-        this.simulator = simulator;
+    public void setSimulators(Map<String, String> simulators) {
+        this.simulators = simulators;
     }
 
     public int getCapacity() {
