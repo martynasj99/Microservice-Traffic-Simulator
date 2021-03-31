@@ -27,21 +27,20 @@ public class DriverController {
 
     @PutMapping("/{id}/notifications/{type}")
     public void sendAction(@PathVariable Long id, @PathVariable String type, @RequestBody EnvironmentState state){
+        state.setTime(driverService.getTime());
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Driver driver = driverService.getDrivers().get(id);
         Action action = driver.generateAction(state, type);
-
-
 /*        if(!state.getPossibleActions().contains(action.getType())){
             logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");
         }*/
 
         HttpEntity<Action> body = new HttpEntity<>(action, headers);
-
-        logger.info("Sending... " + state.getId() + " " + action.getType());
+        logger.info("Sending... " + state.getId() + " " + action.getType() + "Time: " + driverService.getTime());
 
         switch (type){
             case "traffic":
@@ -55,7 +54,11 @@ public class DriverController {
                 break;
         }
 
-
         logger.info("Exiting... " + state.getId());
+    }
+
+    @PutMapping("/time/{time}")
+    public void setTime(@PathVariable String time){
+        driverService.setTime(time);
     }
 }

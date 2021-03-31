@@ -1,5 +1,7 @@
 package driversweb.model;
 
+import driversweb.model.plan.DayPlan;
+
 public class Driver {
 
     private Long id;
@@ -24,9 +26,12 @@ public class Driver {
             else if(!state.isAtIntersection() && state.getVehicleSpeed() > 0 ) action.setType("move");
             else action.setType("wait");
         }else if(type.equals("home")){
-            action.setType("watching tv");
+            if(getPlan() != null && getPlan().getSchedule().containsKey(state.getTime()) ){
+                action.setType("plan");
+                action.setNewDestination(getPlan().getSchedule().get(state.getTime()));
+            }else
+                action.setType("watching tv");
         }
-
 
         return action;
     }

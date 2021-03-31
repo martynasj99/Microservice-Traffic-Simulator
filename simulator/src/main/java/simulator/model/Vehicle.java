@@ -1,12 +1,21 @@
 package simulator.model;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
+import simulator.exception.NoAgentAttachedException;
 import simulator.model.action.*;
 import simulator.model.plan.VehicleRoute;
 import simulator.service.ServiceContext;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Vehicle {
+    Logger logger = Logger.getLogger(Vehicle.class.getName());
+
     private final static Map<String, ActionFactory<?>> executors = new Hashtable<>();
     static {
         executors.put("accelerate", new AccelerateFactory());
@@ -35,6 +44,21 @@ public class Vehicle {
         this.speed = 1;
         this.progress = 2;
         this.vision = 5;
+    }
+
+    public void sendNotification(EnvironmentState state){
+        if(notificationUri == null) throw new NoAgentAttachedException("No Agent is attached to vehicle: " + id);
+
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
+
+        logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + id);
+        //template.postForObject(uri, request, Void.class);
+        template.exchange(notificationUri+"/traffic", HttpMethod.PUT, request, Void.class);
+        logger.info(" Notification Sent : "+state.getId()+" sent from : " + id);
     }
 
     public void nextStage(){

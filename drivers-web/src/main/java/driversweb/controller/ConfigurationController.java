@@ -1,7 +1,7 @@
 package driversweb.controller;
 
 import driversweb.Configuration;
-import driversweb.model.DayPlan;
+import driversweb.model.plan.DayPlan;
 import driversweb.model.Driver;
 import driversweb.service.DriverService;
 import net.minidev.json.JSONObject;

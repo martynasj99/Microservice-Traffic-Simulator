@@ -11,7 +11,7 @@ import simulator.service.ServiceContext;
 import simulator.model.Traffic;
 import simulator.model.Vehicle;
 
-import java.util.List;
+import java.util.*;
 
 public class EnterIntersectionExecutor implements ActionExecutor {
 
@@ -32,7 +32,8 @@ public class EnterIntersectionExecutor implements ActionExecutor {
             if(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().containsKey(vehicle.getId().toString())){
                 RestTemplate restTemplate = new RestTemplate();
                 JSONObject object = new JSONObject();
-                object.put("notificationUri", vehicle.getNotificationUri());
+
+                object.put("notificationUri", new HashSet<>(Collections.singletonList(vehicle.getNotificationUri())));
                 vehicle.setNotificationUri(null);
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
@@ -49,7 +50,7 @@ public class EnterIntersectionExecutor implements ActionExecutor {
             if(serviceContext.mapService.isSafeMode()){
                 return false;
             }else{
-                serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+                //serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
             }
         }
         return true;

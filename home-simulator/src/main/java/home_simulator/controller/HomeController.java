@@ -27,6 +27,14 @@ public class HomeController {
 
     @PutMapping("/{id}")
     public void notificationPath(@PathVariable Long id, @RequestBody Home home){
-        homeService.getHome(id).setNotificationUri(home.getNotificationUri());
+        Home h = homeService.getHome(id);
+        if(h.getNotificationUri() == null){
+            h.setNotificationUri(home.getNotificationUri());
+        }else{
+            for(String uri : home.getNotificationUri()){
+                homeService.getHome(id).addNotificationUri(uri);
+            }
+        }
+
     }
 }

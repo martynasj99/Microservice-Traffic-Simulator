@@ -1,4 +1,4 @@
-package simulator.model.view;
+package management.model;
 
 public class InformationView {
 

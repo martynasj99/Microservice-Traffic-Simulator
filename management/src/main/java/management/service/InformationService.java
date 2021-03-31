@@ -1,23 +1,19 @@
-package simulator.service;
+package management.service;
 
+import management.GlobalClock;
+import management.model.InformationView;
 import org.springframework.stereotype.Service;
-import simulator.model.view.InformationView;
-import simulator.utils.GlobalClock;
 
 @Service
 public class InformationService {
 
-    public final GlobalClock clock = GlobalClock.getInstance();
-
     private InformationView informationView = new InformationView();
-
+    private GlobalClock clock = GlobalClock.getInstance();
 
     public void setTime(int step){
         clock.setTime(step);
         this.informationView.setTime(clock.toString());
     }
-
-
 
     public String getTime(){
         return informationView.getTime();

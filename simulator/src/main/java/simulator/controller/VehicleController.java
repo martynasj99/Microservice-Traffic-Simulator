@@ -43,7 +43,7 @@ public class VehicleController {
     }
 
     @PutMapping("/{id}")
-    public void notificationPath(@PathVariable Long id, @RequestBody Vehicle vehicle){ //TODO CHANGE TO PATCH
+    public void notificationPath(@PathVariable Long id, @RequestBody Vehicle vehicle){
         vehicleService.getVehicle(id).setNotificationUri(vehicle.getNotificationUri());
     }
 }

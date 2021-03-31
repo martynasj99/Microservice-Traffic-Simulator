@@ -1,16 +1,9 @@
 package simulator.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import simulator.exception.NoAgentAttachedException;
 import simulator.model.*;
 import simulator.model.network.Intersection;
-import simulator.utils.GlobalClock;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -20,8 +13,6 @@ public class VehicleService {
 
     private final Logger logger = Logger.getLogger(VehicleService.class.getName());
 
-    private GlobalClock clock = GlobalClock.getInstance();
-
     @Autowired
     private ServiceContext serviceContext;
 
@@ -30,9 +21,6 @@ public class VehicleService {
 
     @Autowired
     private LocationService locationService;
-
-    @Autowired
-    private InformationService informationService;
 
     private Map<Long, Vehicle> vehicles = new Hashtable<>();
 
@@ -75,7 +63,6 @@ public class VehicleService {
         EnvironmentState environmentState = new EnvironmentState();
         environmentState.setPossibleActions(generatePossibleActions(vehicle));
         environmentState.setId(vehicle.getId().intValue());
-        environmentState.setTime(informationService.getTime());
         environmentState.setVehicleSpeed(vehicle.getSpeed());
         environmentState.setHasEndNode(vehicle.getEndNode() != null);
         environmentState.setHasArrived(vehicle.hasArrived());
@@ -109,7 +96,6 @@ public class VehicleService {
                 locationService.getLocations().getWaitingToLeave().put(vehicle.getCurrentNode(), waiting);
             }
         }
-
         System.out.println(environmentState.toString());
         return environmentState;
     }
@@ -122,25 +108,7 @@ public class VehicleService {
         return false;
     }
 
-
-
     public boolean checkTrafficLightStatus(Long fromId){
         return mapService.getTrafficLightStatus().getOrDefault(fromId, true);
-    }
-
-    public void sendNotification(Vehicle vehicle, EnvironmentState state){
-        if(vehicle.getNotificationUri() == null) throw new NoAgentAttachedException("No Agent is attached to vehicle: " + vehicle.getId());
-
-        RestTemplate template = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
-
-        logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + vehicle.getId());
-        String uri = vehicle.getNotificationUri();
-        //template.postForObject(uri, request, Void.class);
-        template.exchange(uri+"/traffic", HttpMethod.PUT, request, Void.class);
-        logger.info(" Notification Sent : "+state.getId()+" sent from : " + vehicle.getId());
     }
 }

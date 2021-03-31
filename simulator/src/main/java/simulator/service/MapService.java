@@ -176,4 +176,5 @@ public class MapService {
     public boolean isSafeMode() {
         return safeMode;
     }
+
 }

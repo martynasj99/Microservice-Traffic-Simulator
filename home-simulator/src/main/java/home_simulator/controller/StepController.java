@@ -1,5 +1,6 @@
 package home_simulator.controller;
 
+import home_simulator.model.Action;
 import home_simulator.model.EnvironmentState;
 import home_simulator.model.Home;
 import home_simulator.model.State;
@@ -26,8 +27,9 @@ public class StepController {
         for(Home home : homeService.getHomes().values()){
             if(home.getNotificationUri() != null){
                 if(home.getNextAction() != null) {
+                    Action action = home.getNextAction();
                     home.setNextAction(null);
-                    home.execute();
+                    home.execute(action);
                 }
             }
         }
@@ -37,7 +39,7 @@ public class StepController {
                 EnvironmentState environmentState = new EnvironmentState();
                 environmentState.setAtHome(true);
                 environmentState.setId(home.getId().intValue());
-                homeService.sendNotification(home, environmentState);
+                home.sendNotification(environmentState);
             }
         }
     }

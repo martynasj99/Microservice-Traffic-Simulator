@@ -5,26 +5,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import simulator.model.*;
-import simulator.service.InformationService;
 import simulator.service.ServiceContext;
 import simulator.service.VehicleService;
-import simulator.utils.GlobalClock;
 
 import java.util.logging.Logger;
 
 
 @RestController
 public class StepController {
-
     private final Logger logger = Logger.getLogger(StepController.class.getName());
-
-    private GlobalClock clock = GlobalClock.getInstance();
 
     @Autowired
     private VehicleService vehicleService;
-
-    @Autowired
-    private InformationService informationService;
 
     @Autowired
     private ServiceContext serviceContext;
@@ -33,7 +25,6 @@ public class StepController {
     public void step(@RequestBody State state){
         double startStep = System.currentTimeMillis();
         logger.info("Starting... [" + state.getStep() + "]");
-        informationService.setTime(state.getStep());;
 
         for(Vehicle vehicle : vehicleService.getVehicles()){
             if(vehicle.getNotificationUri() != null){
@@ -50,11 +41,11 @@ public class StepController {
         for(Vehicle vehicle : vehicleService.getVehicles()){
             if(vehicle.getNotificationUri() != null){
                 EnvironmentState environmentState = vehicleService.generateEnvironment(vehicle);
-                vehicleService.sendNotification(vehicle, environmentState);
+                vehicle.sendNotification(environmentState);
             }
         }
 
         double endStep = System.currentTimeMillis();
-        logger.info("Step "+ state.getStep() + " at time: " + clock + " took " + (endStep - startStep)/100 + "s");
+        logger.info("Step "+ state.getStep() + " at time: "  + " took " + (endStep - startStep)/100 + "s");
     }
 }

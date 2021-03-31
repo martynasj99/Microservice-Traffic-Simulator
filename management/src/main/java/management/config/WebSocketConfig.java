@@ -1,4 +1,4 @@
-package simulator.config;
+package management.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/traffic", "/nodes", "/map").setAllowedOrigins("http://localhost:8080").withSockJS();
+        registry.addEndpoint("/information").setAllowedOrigins("http://localhost:8080").withSockJS();
     }
 
     @Override

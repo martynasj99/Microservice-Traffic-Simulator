@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class HomeService {
@@ -29,15 +30,6 @@ public class HomeService {
         return getHomes().get(id);
     }
 
-    public void sendNotification(Home home, EnvironmentState state){
-        RestTemplate template = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
-
-        String uri = home.getNotificationUri();
-        template.exchange(uri+"/home", HttpMethod.PUT, request, Void.class);
-    }
 
 }

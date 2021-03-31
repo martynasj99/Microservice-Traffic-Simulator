@@ -1,6 +1,6 @@
 package driversweb;
 
-import driversweb.model.DayPlan;
+import driversweb.model.plan.DayPlan;
 
 import java.util.Map;
 

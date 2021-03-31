@@ -1,4 +1,4 @@
-package driversweb.model;
+package driversweb.model.plan;
 
 import java.util.Map;
 

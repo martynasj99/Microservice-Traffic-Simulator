@@ -30,7 +30,7 @@ public class LeaveIntersectionExecutor implements ActionExecutor {
             if(serviceContext.mapService.isSafeMode()){
                 return false;
             }else{
-                serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+                //serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
             }
         }
         return true;

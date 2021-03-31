@@ -32,11 +32,11 @@ class WebSocket{
     }
 }
 
-var webSocket1 = new WebSocket('traffic', 8081),
+const webSocket1 = new WebSocket('traffic', 8081),
     webSocket2 = new WebSocket('nodes', 8081),
     webSocket3 = new WebSocket('map', 8081);
     webSocket4 = new WebSocket('traffic-lights', 8082);
-    webSocket5 = new WebSocket('information', 8081)
+    webSocket5 = new WebSocket('information', 8083)
 webSocket1.connect();
 webSocket2.connect();
 webSocket3.connect();
