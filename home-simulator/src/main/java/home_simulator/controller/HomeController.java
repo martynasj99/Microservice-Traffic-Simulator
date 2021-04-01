@@ -6,6 +6,7 @@ import home_simulator.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,19 +23,19 @@ public class HomeController {
 
     @PutMapping("/{id}/action")
     public void addAction(@PathVariable Long id, @RequestBody Action action){
-        homeService.getHome(id).setNextAction(action);
+        Home h = homeService.getHome(id);
+        if(h.getNextAction() == null) h.setNextAction(new HashMap<>());
+        homeService.getHome(id).addNextAction(action.getId(), action);
     }
 
     @PutMapping("/{id}")
     public void notificationPath(@PathVariable Long id, @RequestBody Home home){
         Home h = homeService.getHome(id);
-        if(h.getNotificationUri() == null){
-            h.setNotificationUri(home.getNotificationUri());
-        }else{
-            for(String uri : home.getNotificationUri()){
-                homeService.getHome(id).addNotificationUri(uri);
-            }
-        }
+        if(h.getNotificationUri() == null)
+            h.setNotificationUri(new HashMap<>());
 
+        for(Map.Entry<Long, String> uri : home.getNotificationUri().entrySet()){
+            homeService.getHome(id).addNotificationUri(uri.getKey(), uri.getValue());
+        }
     }
 }

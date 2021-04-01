@@ -33,7 +33,9 @@ public class EnterIntersectionExecutor implements ActionExecutor {
                 RestTemplate restTemplate = new RestTemplate();
                 JSONObject object = new JSONObject();
 
-                object.put("notificationUri", new HashSet<>(Collections.singletonList(vehicle.getNotificationUri())));
+                Map<Long, String> notificationUri = new HashMap<>();
+                notificationUri.put(vehicle.getId(), vehicle.getNotificationUri());
+                object.put("notificationUri", notificationUri);
                 vehicle.setNotificationUri(null);
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);

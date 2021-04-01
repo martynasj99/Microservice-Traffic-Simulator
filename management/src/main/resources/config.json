@@ -124,7 +124,8 @@
       "type": "HOME",
       "capacity": 2,
       "simulators": {
-        "4": "http://localhost:8084/homes/1"
+        "4": "http://localhost:8084/homes/1",
+        "1": "http://localhost:8084/homes/1"
       }
     },
     {

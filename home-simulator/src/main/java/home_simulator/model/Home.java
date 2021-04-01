@@ -7,15 +7,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class Home {
+    private Logger logger = Logger.getLogger(Home.class.getName());
 
     private Long id;
-    private Action nextAction;
-    private Set<String> notificationUri;
+    private Map<Long, Action> nextAction;
+    private Map<Long, String> notificationUri;
     private String link = "http://localhost:8081/vehicles/4";
 
     public Home() {
@@ -26,9 +27,8 @@ public class Home {
             RestTemplate restTemplate = new RestTemplate();
             JSONObject object = new JSONObject();
 
-            object.put("notificationUri", "http://localhost:9001/4/notifications");
-            notificationUri.remove("http://localhost:9001/4/notifications");
-            setNotificationUri(null);
+            object.put("notificationUri", notificationUri.get(action.getId()));
+            notificationUri.remove(action.getId());
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
@@ -37,9 +37,8 @@ public class Home {
             HttpEntity<Action> actionBody = new HttpEntity<>(action, headers);
             restTemplate.exchange(link+"/action", HttpMethod.PUT, actionBody, Void.class);
         }else {
-            System.out.println(id + " is Watching TV!");
+            logger.info(action.getId() + " is Watching TV! At home: " + id);
         }
-
     }
 
     public void sendNotification(EnvironmentState state){
@@ -49,8 +48,7 @@ public class Home {
 
         HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
 
-        Set<String> notifications = notificationUri;
-        for(String uri : notifications)
+        for(String uri : notificationUri.values())
             template.exchange(uri+"/home", HttpMethod.PUT, request, Void.class);
     }
 
@@ -62,27 +60,31 @@ public class Home {
         this.id = id;
     }
 
-    public Action getNextAction() {
+    public Map<Long, Action> getNextAction() {
         return nextAction;
     }
 
-    public void setNextAction(Action nextAction) {
+    public void setNextAction(Map<Long, Action> nextAction) {
         this.nextAction = nextAction;
     }
 
-    public void addNotificationUri(String notificationUri){
-        getNotificationUri().add(notificationUri);
+    public Map<Long, String> getNotificationUri() {
+        return notificationUri;
     }
 
-    public void removeNotificationUri(String notificationUri){
-        getNotificationUri().remove(notificationUri);
-    }
-
-    public void setNotificationUri(Set<String> notificationUri) {
+    public void setNotificationUri(Map<Long, String> notificationUri) {
         this.notificationUri = notificationUri;
     }
 
-    public Set<String> getNotificationUri() {
-        return notificationUri;
+    public void addNextAction(Long id, Action action){
+        nextAction.put(id, action);
+    }
+
+    public void addNotificationUri(Long id, String notificationUri){
+        getNotificationUri().put(id, notificationUri);
+    }
+
+    public void removeNotificationUri(Long id){
+        getNotificationUri().remove(id);
     }
 }

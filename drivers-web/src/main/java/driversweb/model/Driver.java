@@ -12,6 +12,7 @@ public class Driver {
 
     public Action generateAction(EnvironmentState state, String type){
         Action action = new Action();
+        action.setId(id);
 
         if(type.equals("traffic")){
             if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(state.getTime()) ){
@@ -32,7 +33,6 @@ public class Driver {
             }else
                 action.setType("watching tv");
         }
-
         return action;
     }
 
