@@ -11,15 +11,14 @@ import simulator.Configuration;
 import simulator.exception.IntersectionNotFoundException;
 import simulator.exception.InvalidException;
 import simulator.exception.StreetNotFoundException;
-import simulator.model.*;
 import simulator.model.network.Intersection;
 import simulator.model.network.Street;
+import simulator.model.vehicle.Vehicle;
 import simulator.model.view.MapView;
 import simulator.repository.IntersectionRepository;
 import simulator.repository.StreetRepository;
 import simulator.utils.PathGenerator;
 
-import javax.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,7 +71,9 @@ public class MapService {
 
 
         locationService.updateLocations();
-        locationService.initTraffic();
+        for(Street street : getMap().getLinks()){
+            locationService.addNewTraffic(street);
+        }
     }
 
     public MapView getMap(){

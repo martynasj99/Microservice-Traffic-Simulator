@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import simulator.Configuration;
 import simulator.exception.InvalidException;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 import simulator.service.MapService;
 import simulator.service.VehicleService;
 

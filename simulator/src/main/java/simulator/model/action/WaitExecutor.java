@@ -1,7 +1,7 @@
 package simulator.model.action;
 
 import simulator.service.ServiceContext;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 
 import java.util.List;
 

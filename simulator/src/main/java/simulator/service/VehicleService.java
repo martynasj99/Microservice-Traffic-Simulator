@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simulator.model.*;
 import simulator.model.network.Intersection;
+import simulator.model.vehicle.Vehicle;
 
 import java.util.*;
 import java.util.logging.Logger;

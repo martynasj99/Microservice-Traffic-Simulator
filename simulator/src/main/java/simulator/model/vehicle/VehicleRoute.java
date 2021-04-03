@@ -1,4 +1,4 @@
-package simulator.model.plan;
+package simulator.model.vehicle;
 
 import java.util.List;
 
@@ -15,6 +15,14 @@ public class VehicleRoute {
         this.startNode = startNode;
         this.endNode = endNode;
         this.path = path;
+    }
+
+    public int pathSize(){
+        return path != null ? path.size() : 0;
+    }
+
+    public String getNodeAt(int index){
+        return path != null ? path.get(index) : null;
     }
 
     public String getStartNode() {

@@ -8,4 +8,5 @@ public class ServiceContext {
     @Autowired public LocationService locationService;
     @Autowired public MapService mapService;
     @Autowired public VehicleService vehicleService;
+    @Autowired public InformationService informationService;
 }

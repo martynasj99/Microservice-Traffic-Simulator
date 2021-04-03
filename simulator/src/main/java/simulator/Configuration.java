@@ -1,6 +1,6 @@
 package simulator;
 
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 import simulator.model.network.Intersection;
 import simulator.model.network.Street;
 

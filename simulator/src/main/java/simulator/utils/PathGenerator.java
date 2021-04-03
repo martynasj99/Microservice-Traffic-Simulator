@@ -40,10 +40,4 @@ public class PathGenerator {
         return path;
 
     }
-
-/*    public Path getPath(String startNode, String toNode, IntersectionRepository intersectionRepository){
-        PathFinder<WeightedPath> finder = GraphAlgoFactory.dijkstra(PathExpanders.allTypesAndDirections(), "length");
-
-        return finder.findSinglePath((Node) intersectionRepository.findByName(startNode).get(), (Node) intersectionRepository.findByName(toNode).get());
-    }*/
 }

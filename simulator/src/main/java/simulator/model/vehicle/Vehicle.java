@@ -1,15 +1,16 @@
-package simulator.model;
+package simulator.model.vehicle;
 
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 import simulator.exception.NoAgentAttachedException;
+import simulator.model.Action;
+import simulator.model.EnvironmentState;
 import simulator.model.action.*;
-import simulator.model.plan.VehicleRoute;
 import simulator.service.ServiceContext;
-
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -28,21 +29,17 @@ public class Vehicle {
     }
 
     private Long id;
-
-    private Long currentStreet;
-    private String currentNode;
-    private String nextNode;
     private VehicleRoute route;
+    private VehicleLocation location;
+    private VehicleProgress vehicleProgress;
     private int speed;
-    private int progress;
     private int vision;
-    private int streetProgress;
     private String notificationUri;
     private Action nextAction;
 
     public Vehicle() {
+        this.vehicleProgress = new VehicleProgress();
         this.speed = 1;
-        this.progress = 2;
         this.vision = 5;
     }
 
@@ -52,7 +49,6 @@ public class Vehicle {
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
 
         logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + id);
@@ -61,11 +57,27 @@ public class Vehicle {
         logger.info(" Notification Sent : "+state.getId()+" sent from : " + id);
     }
 
+    public void transferSimulator(String simulatorUrl){
+        RestTemplate restTemplate = new RestTemplate();
+        JSONObject object = new JSONObject();
+
+        Map<Long, String> notificationUri = new HashMap<>();
+        notificationUri.put(id, this.notificationUri);
+        object.put("notificationUri", notificationUri);
+        setNotificationUri(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
+        restTemplate.exchange(simulatorUrl, HttpMethod.PUT, body, Void.class);
+        logger.info("Vehicle: " + id + " is transferring to simulator: " + simulatorUrl);
+    }
+
     public void nextStage(){
-        currentNode = nextNode;
-        nextNode = progress < route.getPath().size() ? route.getPath().get(progress++) : nextNode;
-        currentStreet = null;
-        streetProgress = 0;
+        setCurrentNode(getNextNode());
+        setNextNode(getProgress() < route.pathSize() ? route.getNodeAt(getProgress()) : getNextNode());
+        vehicleProgress.nextTotalProgress();
+        setCurrentStreet(null);
+        setStreetProgress(0);
     }
 
     public synchronized boolean execute(ServiceContext serviceContext, Action action){
@@ -75,7 +87,7 @@ public class Vehicle {
 
 
     public boolean hasArrived(){
-        return currentNode != null && currentNode.equals(route.getEndNode());
+        return getCurrentNode() != null && getCurrentNode().equals(route.getEndNode());
     }
 
     public void newPlan(){
@@ -104,27 +116,35 @@ public class Vehicle {
     }
 
     public Long getCurrentStreet() {
-        return currentStreet;
+        return getLocation().getCurrentStreet();
     }
 
     public void setCurrentStreet(Long currentStreet) {
-        this.currentStreet = currentStreet;
+        getLocation().setCurrentStreet(currentStreet);
     }
 
     public String getCurrentNode() {
-        return currentNode;
+        return getLocation().getCurrentNode();
     }
 
     public void setCurrentNode(String currentNode) {
-        this.currentNode = currentNode;
+        getLocation().setCurrentNode(currentNode);
     }
 
     public String getNextNode() {
-        return nextNode;
+        return getLocation().getNextNode();
     }
 
     public void setNextNode(String nextNode) {
-        this.nextNode = nextNode;
+        getLocation().setNextNode(nextNode);
+    }
+
+    public VehicleLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(VehicleLocation location) {
+        this.location = location;
     }
 
     public VehicleRoute getRoute() {
@@ -144,19 +164,19 @@ public class Vehicle {
     }
 
     public int getProgress() {
-        return progress;
+        return getVehicleProgress().getTotalProgress();
     }
 
     public void setProgress(int progress) {
-        this.progress = progress;
+        getVehicleProgress().setTotalProgress(progress);
     }
 
     public int getStreetProgress() {
-        return streetProgress;
+        return getVehicleProgress().getCurrentStreetProgress();
     }
 
     public void setStreetProgress(int streetProgress) {
-        this.streetProgress = streetProgress;
+        getVehicleProgress().setCurrentStreetProgress(streetProgress);
     }
 
     public String getNotificationUri() {
@@ -200,5 +220,13 @@ public class Vehicle {
 
     public void setVision(int vision) {
         this.vision = vision;
+    }
+
+    public VehicleProgress getVehicleProgress() {
+        return vehicleProgress;
+    }
+
+    public void setVehicleProgress(VehicleProgress vehicleProgress) {
+        this.vehicleProgress = vehicleProgress;
     }
 }

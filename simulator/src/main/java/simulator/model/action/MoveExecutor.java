@@ -2,7 +2,7 @@ package simulator.model.action;
 
 import simulator.service.ServiceContext;
 import simulator.model.Traffic;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MoveExecutor implements ActionExecutor {
             if(serviceContext.mapService.isSafeMode()){
                 return false;
             }else{
-                //serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+                serviceContext.informationService.addCrash("Crash at Street: "+vehicle.getCurrentStreet()+ " by vehicle: "+vehicle.getId());
             }
         }
         return true;

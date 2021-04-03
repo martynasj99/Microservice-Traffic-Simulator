@@ -1,5 +1,7 @@
 package simulator.model;
 
+import simulator.model.vehicle.Vehicle;
+
 public class Traffic {
 
     private int cells;

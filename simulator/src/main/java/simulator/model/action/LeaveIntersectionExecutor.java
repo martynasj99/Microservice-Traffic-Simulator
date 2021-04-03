@@ -2,7 +2,7 @@ package simulator.model.action;
 
 import simulator.service.ServiceContext;
 import simulator.model.Traffic;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 
 import java.util.List;
 
@@ -21,7 +21,6 @@ public class LeaveIntersectionExecutor implements ActionExecutor {
         vehicle.setCurrentNode(null);
         vehicle.setCurrentStreet(currentStreetId);
         serviceContext.locationService.updateOnAction(vehicle, traffic, vehicle.getCurrentStreet());
-
         return true;
     }
 
@@ -30,7 +29,7 @@ public class LeaveIntersectionExecutor implements ActionExecutor {
             if(serviceContext.mapService.isSafeMode()){
                 return false;
             }else{
-                //serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+                serviceContext.informationService.addCrash("Crash leaving intersection: "+vehicle.getCurrentNode()+ " by vehicle: "+vehicle.getId());
             }
         }
         return true;

@@ -1,6 +1,5 @@
 package simulator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +14,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-import simulator.model.Vehicle;
 import simulator.repository.IntersectionRepository;
 import simulator.service.VehicleService;
 import simulator.service.MapService;
-import java.io.InputStream;
+
 import java.net.URI;
 
 @EnableTransactionManagement

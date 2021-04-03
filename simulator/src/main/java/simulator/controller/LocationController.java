@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import simulator.model.view.LocationView;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 import simulator.model.Traffic;
 import simulator.service.LocationService;
 

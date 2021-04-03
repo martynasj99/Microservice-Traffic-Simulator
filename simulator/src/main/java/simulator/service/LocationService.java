@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simulator.model.view.LocationView;
 import simulator.model.network.Street;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 import simulator.model.Traffic;
 
 import java.util.*;
@@ -57,19 +57,9 @@ public class LocationService {
         return locationView.getVehiclesAtNodes();
     }
 
-    public void initTraffic(){
-        Map<Long, Traffic> vehicleStreetLocations = new HashMap<>(); //STREET ID -> TRAFFIC AT THE STREET
-        for(Street street : mapService.getMap().getLinks()){
-            Traffic traffic = new Traffic(street.getLength());
-            vehicleStreetLocations.put(street.getRelationshipId(), traffic);
-        }
-        locationView.setTrafficAtStreet(vehicleStreetLocations);
-    }
-
     public void addNewTraffic(Street street){
         Map<Long, Traffic> trafficAtStreet = locationView.getTrafficAtStreet();
-        Traffic traffic = new Traffic(street.getLength());
-        trafficAtStreet.put(street.getRelationshipId(), traffic);
+        trafficAtStreet.put(street.getRelationshipId(), new Traffic(street.getLength()));
         locationView.setTrafficAtStreet(trafficAtStreet);
     }
 

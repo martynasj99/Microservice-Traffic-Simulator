@@ -1,9 +1,8 @@
 package simulator.model.action;
 
 import simulator.exception.InvalidActionException;
-import simulator.model.Action;
 import simulator.service.ServiceContext;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 
 import java.util.List;
 

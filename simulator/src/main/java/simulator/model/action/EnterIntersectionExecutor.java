@@ -1,15 +1,10 @@
 package simulator.model.action;
 
-import net.minidev.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.client.RestTemplate;
 import simulator.exception.InvalidActionException;
+import simulator.model.network.Intersection;
 import simulator.service.ServiceContext;
 import simulator.model.Traffic;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 
 import java.util.*;
 
@@ -28,31 +23,21 @@ public class EnterIntersectionExecutor implements ActionExecutor {
         serviceContext.locationService.updateOnAction(vehicle,traffic, curr);
 
         //TRANSFER TO A NEW SIMULATOR
-        if(vehicle.getCurrentNode() != null && serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators() != null){
-            if(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().containsKey(vehicle.getId().toString())){
-                RestTemplate restTemplate = new RestTemplate();
-                JSONObject object = new JSONObject();
-
-                Map<Long, String> notificationUri = new HashMap<>();
-                notificationUri.put(vehicle.getId(), vehicle.getNotificationUri());
-                object.put("notificationUri", notificationUri);
-                vehicle.setNotificationUri(null);
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-                restTemplate.exchange(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().get(vehicle.getId().toString()), HttpMethod.PUT, body, Void.class);
-            }
+        Intersection currentIntersection = serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode());
+        if(currentIntersection.getSimulators() != null && currentIntersection.getSimulators().containsKey(vehicle.getId().toString())){
+            vehicle.transferSimulator(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().get(vehicle.getId().toString()));
         }
 
         return true;
     }
 
     private boolean isActionSafe(Vehicle vehicle, ServiceContext serviceContext){
-        if(serviceContext.locationService.getLocations().getNumberOfVehiclesAtNodes().getOrDefault(vehicle.getNextNode(), 0) >= serviceContext.mapService.getIntersectionByName(vehicle.getNextNode()).getCapacity()){
+        Intersection nextIntersection = serviceContext.mapService.getIntersectionByName(vehicle.getNextNode());
+        if(serviceContext.locationService.getLocations().getNumberOfVehiclesAtNodes().getOrDefault(vehicle.getNextNode(), 0) >= nextIntersection.getCapacity()){
             if(serviceContext.mapService.isSafeMode()){
                 return false;
             }else{
-                //serviceContext.informationService.getInformationView().setMessage("CRASH: " + vehicle.getId());
+                serviceContext.informationService.addCrash("Crash at Intersection: "+nextIntersection.getId() + " by vehicle: "+vehicle.getId());
             }
         }
         return true;

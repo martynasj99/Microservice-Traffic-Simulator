@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 public class Home {

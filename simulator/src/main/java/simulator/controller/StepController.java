@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import simulator.model.*;
+import simulator.model.vehicle.Vehicle;
 import simulator.service.ServiceContext;
 import simulator.service.VehicleService;
 

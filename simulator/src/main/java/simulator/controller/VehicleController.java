@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import simulator.model.Action;
 import simulator.service.ServiceContext;
-import simulator.model.Vehicle;
+import simulator.model.vehicle.Vehicle;
 import simulator.service.VehicleService;
 
 @RestController
