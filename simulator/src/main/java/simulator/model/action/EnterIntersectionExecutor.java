@@ -22,10 +22,10 @@ public class EnterIntersectionExecutor implements ActionExecutor {
 
         serviceContext.locationService.updateOnAction(vehicle,traffic, curr);
 
-        //TRANSFER TO A NEW SIMULATOR
         Intersection currentIntersection = serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode());
         if(currentIntersection.getSimulators() != null && currentIntersection.getSimulators().containsKey(vehicle.getId().toString())){
             vehicle.transferSimulator(serviceContext.mapService.getIntersectionByName(vehicle.getCurrentNode()).getSimulators().get(vehicle.getId().toString()));
+            serviceContext.informationService.addTrip(vehicle.getRoundTrip());
         }
 
         return true;

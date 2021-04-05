@@ -22,7 +22,7 @@ agent Main extends mams.PassiveMAMSAgent {
             cartago.println("Driver " + X);
             S.createAgent(""+X, "Driver");
             S.sleep(1000);
-            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/state\"}", int code1, string content1);
+            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code1, string content1);
             X = X+1;
         }
     }

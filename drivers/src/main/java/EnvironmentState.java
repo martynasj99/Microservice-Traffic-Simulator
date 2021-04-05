@@ -3,7 +3,7 @@ import java.util.Set;
 public class EnvironmentState {
 
     public int id;
-    public String time;
+    public String type;
 
     public int vehicleSpeed;
     public int streetSpeed;
@@ -22,6 +22,8 @@ public class EnvironmentState {
     public boolean obstacleAhead;
 
     public boolean canLeave;
+
+    public boolean atHome;
 
     public Set<String> possibleActions;
 }

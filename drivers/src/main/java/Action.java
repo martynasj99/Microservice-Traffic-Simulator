@@ -1,18 +1,6 @@
 public class Action {
-    private String type;
+    public Long id;
+    public String type;
+    public String newDestination;
 
-    public Action() {
-    }
-
-    public Action(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

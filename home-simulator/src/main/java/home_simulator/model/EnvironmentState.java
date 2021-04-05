@@ -5,7 +5,7 @@ import java.util.Set;
 public class EnvironmentState {
 
     private int id;
-    private String time;
+    private String type;
 
     private int vehicleSpeed;
     private int streetSpeed;
@@ -37,12 +37,13 @@ public class EnvironmentState {
         this.id = id;
     }
 
-    public String getTime() {
-        return time;
+
+    public String getType() {
+        return type;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getVehicleSpeed() {

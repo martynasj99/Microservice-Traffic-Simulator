@@ -29,6 +29,7 @@ public class Vehicle {
     }
 
     private Long id;
+    private RoundTrip roundTrip;
     private VehicleRoute route;
     private VehicleLocation location;
     private VehicleProgress vehicleProgress;
@@ -38,6 +39,9 @@ public class Vehicle {
     private Action nextAction;
 
     public Vehicle() {
+        this.roundTrip = new RoundTrip();
+        roundTrip.setVehicleId(id);
+        roundTrip.start();
         this.vehicleProgress = new VehicleProgress();
         this.speed = 1;
         this.vision = 5;
@@ -53,11 +57,13 @@ public class Vehicle {
 
         logger.info("POSTING Notification: " + state.getId() + " Vehicle: " + id);
         //template.postForObject(uri, request, Void.class);
-        template.exchange(notificationUri+"/traffic", HttpMethod.PUT, request, Void.class);
+        template.exchange(notificationUri, HttpMethod.PUT, request, Void.class);
         logger.info(" Notification Sent : "+state.getId()+" sent from : " + id);
     }
 
     public void transferSimulator(String simulatorUrl){
+        roundTrip.end();
+
         RestTemplate restTemplate = new RestTemplate();
         JSONObject object = new JSONObject();
 
@@ -85,7 +91,6 @@ public class Vehicle {
         return executer.execute(this, serviceContext, null);
     }
 
-
     public boolean hasArrived(){
         return getCurrentNode() != null && getCurrentNode().equals(route.getEndNode());
     }
@@ -97,6 +102,7 @@ public class Vehicle {
         setProgress(2);
         setCurrentNode(getStartNode());
         setNextNode(null);
+        getRoundTrip().start();
     }
 
     public void accelerate(){
@@ -228,5 +234,9 @@ public class Vehicle {
 
     public void setVehicleProgress(VehicleProgress vehicleProgress) {
         this.vehicleProgress = vehicleProgress;
+    }
+
+    public RoundTrip getRoundTrip() {
+        return roundTrip;
     }
 }

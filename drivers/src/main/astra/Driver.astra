@@ -23,25 +23,49 @@ agent Driver extends mams.PassiveMAMSAgent {
         MAMSAgent::!init();
         MAMSAgent::!created("base");
         +vehicle(tc.stringToInt(system.name()));
-        PassiveMAMSAgent::!itemResource("state", "EnvironmentState");
+        PassiveMAMSAgent::!itemResource("notifications", "EnvironmentState");
         console.println("Hello world, " + system.name());
     }
 
-    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
-        cartago.println("name: " + state);
+    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState notifications)) {
+        cartago.println("name: " + notifications);
 
-        boolean hasArrived = oa.getBoolean(state, "hasArrived");
-        boolean atIntersection = oa.getBoolean(state, "atIntersection");
-        boolean canLeave = oa.getBoolean(state, "canLeave");
-        boolean atLastCell = oa.getBoolean(state, "atLastCell");
-        boolean trafficLightStatus = oa.getBoolean(state, "trafficLightStatus");
-        boolean vehicleAhead = oa.getBoolean(state, "vehicleAhead");
-        boolean obstacleAhead = oa.getBoolean(state, "obstacleAhead");
-        boolean obstacleInVision = oa.getBoolean(state, "obstacleInVision");
-        int vehicleSpeed = oa.getInt(state, "vehicleSpeed");
-        int intersectionCurrentCapacity = oa.getInt(state, "intersectionCurrentCapacity");
-        int intersectionMaxCapacity = oa.getInt(state, "intersectionMaxCapacity");
-        int streetSpeed = oa.getInt(state, "streetSpeed");
+        int id = oa.getInt(notifications, "id");
+        string type = oa.getString(notifications, "type");
+
+        int vehicleSpeed = oa.getInt(notifications, "vehicleSpeed");
+        int streetSpeed = oa.getInt(notifications, "streetSpeed");
+        boolean trafficLightStatus = oa.getBoolean(notifications, "trafficLightStatus");
+
+        int intersectionCurrentCapacity = oa.getInt(notifications, "intersectionCurrentCapacity");
+        int intersectionMaxCapacity = oa.getInt(notifications, "intersectionMaxCapacity");
+
+        boolean atIntersection = oa.getBoolean(notifications, "atIntersection");
+        boolean atLastCell = oa.getBoolean(notifications, "atLastCell");
+        boolean hasArrived = oa.getBoolean(notifications, "hasArrived");
+        boolean hasEndNode = oa.getBoolean(notifications, "hasEndNode");
+
+        boolean vehicleAhead = oa.getBoolean(notifications, "vehicleAhead");
+        boolean obstacleInVision = oa.getBoolean(notifications, "obstacleInVision");
+        boolean obstacleAhead = oa.getBoolean(notifications, "obstacleAhead");
+
+        boolean canLeave = oa.getBoolean(notifications, "canLeave");
+
+        cartago.println("id: " + id);
+        cartago.println("type: " + type);
+        cartago.println("vehicleSpeed: " + vehicleSpeed);
+        cartago.println("streetSpeed: " + streetSpeed);
+        cartago.println("trafficLightStatus: " + trafficLightStatus);
+        cartago.println("intersectionCurrentCapacity: " + intersectionCurrentCapacity);
+        cartago.println("intersectionMaxCapacity: " + intersectionMaxCapacity);
+        cartago.println("atIntersection: " + atIntersection);
+        cartago.println("atLastCell: " + atLastCell);
+        cartago.println("hasArrived: " + hasArrived);
+        cartago.println("hasEndNode: " + hasEndNode);
+        cartago.println("vehicleAhead: " + vehicleAhead);
+        cartago.println("obstacleInVision: " + obstacleInVision);
+        cartago.println("obstacleAhead: " + obstacleAhead);
+        cartago.println("canLeave: " + canLeave);
 
         string action = "wait";
 
@@ -57,11 +81,11 @@ agent Driver extends mams.PassiveMAMSAgent {
         else if( (vehicleSpeed > 0 & (vehicleAhead == true | obstacleAhead == true) & (vehicleSpeed > 1 | atLastCell == true) & trafficLightStatus == false & (intersectionCurrentCapacity >= intersectionMaxCapacity  | vehicleSpeed < 2) ) ){
             action = "decelerate";
         }
-        /*else if( vehicleSpeed == 0 & ((atLastCell == true & (trafficLightStatus == true & (intersectionCurrentCapacity < intersectionMaxCapacity)))
+        else if( vehicleSpeed == 0 & ((atLastCell == true & (trafficLightStatus == true & (intersectionCurrentCapacity < intersectionMaxCapacity)))
             & vehicleSpeed == 0) | (atLastCell == false  & obstacleAhead == false) | (vehicleSpeed == 0 & atLastCell == false & vehicleAhead == false)
             & vehicleSpeed < streetSpeed & obstacleInVision == false ) action = "accelerate";
-        else if(atIntersection == false & vehicleSpeed > 0) action = "move";*/
-        //else action = "wait";
+        else if(atIntersection == false & vehicleSpeed > 0) action = "move";
+        else action = "wait";
 
         cartago.println("action: " + action);
         !act(action);
@@ -74,7 +98,7 @@ agent Driver extends mams.PassiveMAMSAgent {
 
     rule +$cartago.property(string name, id(int t)) {
     }
-    rule +$cartago.property(string name, time(int t)) {
+    rule +$cartago.property(string name, type(string t)) {
     }
     rule +$cartago.property(string name, vehicleSpeed(int t)) {
     }

@@ -64,9 +64,13 @@ public class VehicleService {
         EnvironmentState environmentState = new EnvironmentState();
         environmentState.setPossibleActions(generatePossibleActions(vehicle));
         environmentState.setId(vehicle.getId().intValue());
+        environmentState.setType("traffic");
         environmentState.setVehicleSpeed(vehicle.getSpeed());
         environmentState.setHasEndNode(vehicle.getEndNode() != null);
         environmentState.setHasArrived(vehicle.hasArrived());
+
+        environmentState.setIntersectionCurrentCapacity(0);
+        environmentState.setIntersectionMaxCapacity(0);
 
         if(vehicle.getCurrentStreet() != null){
             Traffic traffic = locationService.getTraffic().get(vehicle.getCurrentStreet());

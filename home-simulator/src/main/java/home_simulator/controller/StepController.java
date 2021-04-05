@@ -41,6 +41,7 @@ public class StepController {
             if(home.getNotificationUri() != null){
                 EnvironmentState environmentState = new EnvironmentState();
                 environmentState.setAtHome(true);
+                environmentState.setType("home");
                 environmentState.setId(home.getId().intValue());
                 home.sendNotification(environmentState);
             }

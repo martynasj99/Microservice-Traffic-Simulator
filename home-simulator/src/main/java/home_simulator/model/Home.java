@@ -48,7 +48,7 @@ public class Home {
         HttpEntity<EnvironmentState> request = new HttpEntity<>(state, headers);
 
         for(String uri : notificationUri.values())
-            template.exchange(uri+"/home", HttpMethod.PUT, request, Void.class);
+            template.exchange(uri, HttpMethod.PUT, request, Void.class);
     }
 
     public Long getId() {

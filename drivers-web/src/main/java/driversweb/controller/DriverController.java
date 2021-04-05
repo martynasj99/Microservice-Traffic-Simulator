@@ -25,8 +25,9 @@ public class DriverController {
     @Autowired
     private DriverService driverService;
 
-    @PutMapping("/{id}/notifications/{type}")
-    public void sendAction(@PathVariable Long id, @PathVariable String type, @RequestBody EnvironmentState state){
+    @PutMapping("/{id}/notifications")
+    public void sendAction(@PathVariable Long id, @RequestBody EnvironmentState state){
+        String type = state.getType();
         state.setTime(driverService.getTime());
 
         RestTemplate restTemplate = new RestTemplate();
