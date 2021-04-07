@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import simulator.service.InformationService;
 import simulator.service.LocationService;
 import simulator.service.MapService;
 
@@ -21,6 +22,8 @@ public class SchedulerConfig {
     private MapService mapService;
     @Autowired
     private LocationService locationService;
+    @Autowired
+    private InformationService informationService;
     @Autowired
     private SimpMessagingTemplate template;
 
@@ -38,6 +41,10 @@ public class SchedulerConfig {
         if(mapService.getMap() != null)
             template.convertAndSend("/topic/map", mapService.getMap());
         else logger.warning("Could not send to /topic/map");
+
+        if(informationService.getInformationView() != null){
+            template.convertAndSend("/topic/information", informationService.getInformationView());
+        }else logger.warning("Could not send to /topic/information");
 
     }
 }

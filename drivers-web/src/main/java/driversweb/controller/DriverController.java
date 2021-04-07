@@ -28,13 +28,13 @@ public class DriverController {
     @PutMapping("/{id}/notifications")
     public void sendAction(@PathVariable Long id, @RequestBody EnvironmentState state){
         String type = state.getType();
-        state.setTime(driverService.getTime());
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Driver driver = driverService.getDrivers().get(id);
+        driver.setTime(driverService.getTime());
         Action action = driver.generateAction(state, type);
 /*        if(!state.getPossibleActions().contains(action.getType())){
             logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");

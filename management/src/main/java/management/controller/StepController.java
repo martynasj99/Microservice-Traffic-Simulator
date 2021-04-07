@@ -32,6 +32,6 @@ public class StepController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> body = new HttpEntity<>(headers);
-        //template.exchange("http://localhost:9001/time/"+informationService.getTime(), HttpMethod.PUT, body, Void.class);
+        template.exchange("http://localhost:9001/time/"+informationService.getTime(), HttpMethod.PUT, body, Void.class);
     }
 }

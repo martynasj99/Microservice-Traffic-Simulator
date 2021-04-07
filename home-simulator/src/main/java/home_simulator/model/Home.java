@@ -16,7 +16,7 @@ public class Home {
     private Long id;
     private Map<Long, Action> nextAction;
     private Map<Long, String> notificationUri;
-    private String link = "http://localhost:8081/vehicles/4";
+    private String link = "http://localhost:8081/vehicles/";
 
     public Home() {
     }
@@ -34,7 +34,7 @@ public class Home {
             restTemplate.exchange(link, HttpMethod.PUT, body, Void.class);
 
             HttpEntity<Action> actionBody = new HttpEntity<>(action, headers);
-            restTemplate.exchange(link+"/action", HttpMethod.PUT, actionBody, Void.class);
+            restTemplate.exchange(link+action.getId()+"/action", HttpMethod.PUT, actionBody, Void.class);
         }else {
             logger.info(action.getId() + " is Watching TV! At home: " + id);
         }

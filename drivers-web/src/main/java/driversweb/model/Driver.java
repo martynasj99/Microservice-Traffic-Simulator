@@ -5,6 +5,7 @@ import driversweb.model.plan.DayPlan;
 public class Driver {
 
     private Long id;
+    private String time;
     private DayPlan plan;
 
     public Driver() {
@@ -15,9 +16,9 @@ public class Driver {
         action.setId(id);
 
         if(type.equals("traffic")){
-            if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(state.getTime()) ){
+            if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(time) ){
                 action.setType("plan");
-                action.setNewDestination(getPlan().getSchedule().get(state.getTime()));
+                action.setNewDestination(getPlan().getSchedule().get(time));
             }
             else if(state.isHasArrived() ) action.setType("wait");
             else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
@@ -27,9 +28,9 @@ public class Driver {
             else if(!state.isAtIntersection() && state.getVehicleSpeed() > 0 ) action.setType("move");
             else action.setType("wait");
         }else if(type.equals("home")){
-            if(getPlan() != null && getPlan().getSchedule().containsKey(state.getTime()) ){
+            if(getPlan() != null && getPlan().getSchedule().containsKey(time) ){
                 action.setType("plan");
-                action.setNewDestination(getPlan().getSchedule().get(state.getTime()));
+                action.setNewDestination(getPlan().getSchedule().get(time));
             }else
                 action.setType("watching tv");
         }
@@ -64,5 +65,13 @@ public class Driver {
 
     public void setPlan(DayPlan plan) {
         this.plan = plan;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

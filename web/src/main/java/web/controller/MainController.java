@@ -13,4 +13,8 @@ public class MainController {
         return "index.html";
     }
 
+    @RequestMapping(value = "/information")
+    public String getInformation(){
+        return "information.html";
+    }
 }
