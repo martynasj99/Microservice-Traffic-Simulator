@@ -1,8 +1,8 @@
 package driversweb.controller;
 
-import driversweb.model.Action;
+import common.Action;
+import common.EnvironmentState;
 import driversweb.model.Driver;
-import driversweb.model.EnvironmentState;
 import driversweb.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

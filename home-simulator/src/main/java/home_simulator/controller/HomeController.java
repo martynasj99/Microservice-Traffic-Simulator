@@ -1,6 +1,6 @@
 package home_simulator.controller;
 
-import home_simulator.model.Action;
+import common.Action;
 import home_simulator.model.Home;
 import home_simulator.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;

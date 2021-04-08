@@ -1,5 +1,8 @@
 package simulator.controller;
 
+import common.Action;
+import common.EnvironmentState;
+import common.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

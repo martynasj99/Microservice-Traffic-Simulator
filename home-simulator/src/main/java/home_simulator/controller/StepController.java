@@ -1,16 +1,15 @@
 package home_simulator.controller;
 
-import home_simulator.model.Action;
-import home_simulator.model.EnvironmentState;
+import common.Action;
+import common.EnvironmentState;
+import common.State;
 import home_simulator.model.Home;
-import home_simulator.model.State;
 import home_simulator.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @RestController

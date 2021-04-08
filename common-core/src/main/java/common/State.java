@@ -1,4 +1,4 @@
-package trafficlight.model;
+package common;
 
 public class State {
     private int step;

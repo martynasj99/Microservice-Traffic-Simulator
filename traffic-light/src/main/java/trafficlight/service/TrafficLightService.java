@@ -1,8 +1,8 @@
 package trafficlight.service;
 
+import common.State;
 import org.springframework.stereotype.Service;
 import trafficlight.model.Phase;
-import trafficlight.model.State;
 import trafficlight.model.TrafficLightSignals;
 import trafficlight.model.TrafficLightSystem;
 

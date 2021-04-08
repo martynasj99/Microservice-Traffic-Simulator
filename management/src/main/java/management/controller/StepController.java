@@ -1,7 +1,6 @@
 package management.controller;
 
-import management.model.InformationView;
-import management.model.State;
+import common.State;
 import management.service.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

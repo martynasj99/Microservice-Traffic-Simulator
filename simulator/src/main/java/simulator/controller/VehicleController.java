@@ -1,8 +1,8 @@
 package simulator.controller;
 
+import common.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import simulator.model.Action;
 import simulator.service.ServiceContext;
 import simulator.model.vehicle.Vehicle;
 import simulator.service.VehicleService;
@@ -13,9 +13,6 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
-
-    @Autowired
-    private ServiceContext serviceContext;
 
     @GetMapping("")
     public Iterable<Vehicle> getVehicles(){

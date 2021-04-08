@@ -1,8 +1,8 @@
 package work_simulator.controller;
 
+import common.Action;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import work_simulator.model.Action;
 import work_simulator.model.Work;
 import work_simulator.service.WorkService;
 

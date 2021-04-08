@@ -1,5 +1,7 @@
 package work_simulator.model;
 
+import common.Action;
+import common.EnvironmentState;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,4 @@
-package simulator.model;
+package common;
 
 public class Action {
     private Long id;

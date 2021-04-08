@@ -1,5 +1,7 @@
 package driversweb.model;
 
+import common.Action;
+import common.EnvironmentState;
 import driversweb.model.plan.DayPlan;
 
 public class Driver {

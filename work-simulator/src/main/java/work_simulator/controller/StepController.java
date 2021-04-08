@@ -1,11 +1,11 @@
 package work_simulator.controller;
+import common.Action;
+import common.EnvironmentState;
+import common.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import work_simulator.model.Action;
-import work_simulator.model.EnvironmentState;
-import work_simulator.model.State;
 import work_simulator.model.Work;
 import work_simulator.service.WorkService;
 

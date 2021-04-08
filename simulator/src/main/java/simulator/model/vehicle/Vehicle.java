@@ -1,5 +1,7 @@
 package simulator.model.vehicle;
 
+import common.Action;
+import common.EnvironmentState;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -7,8 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 import simulator.exception.NoAgentAttachedException;
-import simulator.model.Action;
-import simulator.model.EnvironmentState;
 import simulator.model.action.*;
 import simulator.service.ServiceContext;
 import java.util.*;
