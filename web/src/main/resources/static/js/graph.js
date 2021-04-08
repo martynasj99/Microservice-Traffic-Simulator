@@ -16,7 +16,7 @@ function map(){
 
     graph = webSocket3.data;
 
-    console.log("round trip: " +webSocket6.data.roundTrips[0].totalTime);
+    //console.log("round trip: " +webSocket6.data.roundTrips[0].totalTime);
 
     let canvas = d3.select("#network");
 

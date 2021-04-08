@@ -1,4 +1,4 @@
-package home_simulator.model;
+package work_simulator.model;
 
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -10,15 +10,15 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class Home {
-    private Logger logger = Logger.getLogger(Home.class.getName());
+public class Work {
+    private Logger logger = Logger.getLogger(Work.class.getName());
 
     private Long id;
     private Map<Long, Action> nextAction;
     private Map<Long, String> notificationUri;
     private String link = "http://localhost:8081/vehicles/";
 
-    public Home() {
+    public Work() {
     }
 
     public void execute(Action action){
@@ -38,7 +38,7 @@ public class Home {
             HttpEntity<Action> actionBody = new HttpEntity<>(action, headers);
             restTemplate.exchange(link+action.getId()+"/action", HttpMethod.PUT, actionBody, Void.class);
         }else {
-            logger.info(action.getId() + " is Watching TV! At home: " + id);
+            logger.info(action.getId() + " is Working! At: " + id);
         }
     }
 

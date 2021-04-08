@@ -30,6 +30,9 @@ agent Driver extends mams.PassiveMAMSAgent {
     rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState notifications)) {
         cartago.println("name: " + notifications);
 
+        !nextAction(notifications);
+
+      /*
         int id = oa.getInt(notifications, "id");
         string type = oa.getString(notifications, "type");
 
@@ -66,8 +69,9 @@ agent Driver extends mams.PassiveMAMSAgent {
         cartago.println("obstacleInVision: " + obstacleInVision);
         cartago.println("obstacleAhead: " + obstacleAhead);
         cartago.println("canLeave: " + canLeave);
+        */
 
-        string action = "wait";
+    /*    string action = "wait";
 
         if(hasArrived == true ) {
             action = "wait";
@@ -78,7 +82,7 @@ agent Driver extends mams.PassiveMAMSAgent {
         else if( atLastCell == true & vehicleSpeed == 1 & trafficLightStatus == true & intersectionCurrentCapacity < intersectionMaxCapacity ){
             action = "enter";
         }
-        else if( (vehicleSpeed > 0 & (vehicleAhead == true | obstacleAhead == true) & (vehicleSpeed > 1 | atLastCell == true) & trafficLightStatus == false & (intersectionCurrentCapacity >= intersectionMaxCapacity  | vehicleSpeed < 2) ) ){
+        else if( vehicleSpeed > 0 & vehicleAhead == true | obstacleAhead == true & vehicleSpeed > 1 | oa.getBoolean(s, "atLastCell") == true & oa.getBoolean(s, "trafficLightStatus") == false & intersectionCurrentCapacity >= intersectionMaxCapacity  | vehicleSpeed < 2  ){
             action = "decelerate";
         }
         else if( vehicleSpeed == 0 & ((atLastCell == true & (trafficLightStatus == true & (intersectionCurrentCapacity < intersectionMaxCapacity)))
@@ -89,6 +93,23 @@ agent Driver extends mams.PassiveMAMSAgent {
 
         cartago.println("action: " + action);
         !act(action);
+        */
+    }
+
+
+    rule +!nextAction(EnvironmentState s) : oa.getBoolean(s, "hasArrived") == true {
+        cartago.println("action: wait");
+        !act("wait");
+    }
+
+    rule +!nextAction(EnvironmentState s) : oa.getBoolean(s, "atIntersection") == true & oa.getBoolean(s, "canLeave") == true {
+        cartago.println("action: leave");
+        !act("leave");
+    }
+
+    rule +!nextAction(EnvironmentState s) : oa.getInt(s, "vehicleSpeed") > 0 & oa.getBoolean(s, "vehicleAhead") == true | oa.getBoolean(s, "obstacleAhead") == true & oa.getInt(s, "vehicleSpeed") > 1 | oa.getBoolean(s, "atLastCell") == true & oa.getBoolean(s, "trafficLightStatus") == false & oa.getInt(s, "intersectionCurrentCapacity") >= oa.getInt(s, "intersectionMaxCapacity")  | oa.getInt(s, "vehicleSpeed") < 2  {
+        cartago.println("action: decelerate");
+        !act("leave");
     }
 
     rule +!act(string action): service_uri(string uri) & vehicle(int id){
@@ -96,35 +117,7 @@ agent Driver extends mams.PassiveMAMSAgent {
        !put(uri+"/"+id+"/action", "{\"type\":\""+action+"\"}", int code, string content);
     }
 
-    rule +$cartago.property(string name, id(int t)) {
-    }
-    rule +$cartago.property(string name, type(string t)) {
-    }
-    rule +$cartago.property(string name, vehicleSpeed(int t)) {
-    }
-    rule +$cartago.property(string name, streetSpeed(int t)) {
-    }
-    rule +$cartago.property(string name, trafficLightStatus(boolean t)) {
-    }
-    rule +$cartago.property(string name, intersectionCurrentCapacity(int t)) {
-    }
-    rule +$cartago.property(string name, intersectionMaxCapacity(int t)) {
-    }
-    rule +$cartago.property(string name, atIntersection(boolean t)) {
-    }
-    rule +$cartago.property(string name, atLastCell(boolean t)) {
-    }
-    rule +$cartago.property(string name, hasArrived(boolean t)) {
-    }
-    rule +$cartago.property(string name, hasEndNode(boolean t)) {
-    }
-    rule +$cartago.property(string name, vehicleAhead(boolean t)) {
-    }
-    rule +$cartago.property(string name, obstacleInVision(boolean t)) {
-    }
-    rule +$cartago.property(string name, obstacleAhead(boolean t)) {
-    }
-    rule +$cartago.property(string name, canLeave(boolean t)) {
+    rule +$cartago.property(string name, funct f) {
     }
 
 

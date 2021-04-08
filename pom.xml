@@ -18,6 +18,7 @@
         <module>management</module>
 		<module>home-simulator</module>
 		<module>work-simulator</module>
-	</modules>
+        <module>common-core</module>
+    </modules>
 
 </project>
