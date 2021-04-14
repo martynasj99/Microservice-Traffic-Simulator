@@ -48,7 +48,7 @@ public class DriverController {
                 restTemplate.exchange("http://localhost:8081/vehicles/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
                 break;
             case "home":
-                restTemplate.exchange("http://localhost:8084/homes/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
+                restTemplate.exchange("http://localhost:8084/home/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
                 break;
             default:
                 logger.warning("Invalid type");

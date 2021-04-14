@@ -4,18 +4,21 @@ import common.Action;
 import home_simulator.model.Home;
 import home_simulator.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/homes")
+@RequestMapping("/home")
 public class HomeController {
 
     @Autowired
     private HomeService homeService;
 
+    @CrossOrigin(origins = "http://localhost:8080")
+    @MessageMapping("/homes")
     @GetMapping("")
     public Map<Long, Home> getHomes(){
         return homeService.getHomes();

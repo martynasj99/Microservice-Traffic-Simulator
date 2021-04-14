@@ -25,6 +25,8 @@ public class Home {
 
     public void execute(Action action){
         if(action.getType().equals("plan")){
+            logger.info("Switching back to traffic: Home " +id + " Agent: " + action.getId());
+
             RestTemplate restTemplate = new RestTemplate();
             JSONObject object = new JSONObject();
 
@@ -33,12 +35,11 @@ public class Home {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-            restTemplate.exchange(link, HttpMethod.PUT, body, Void.class);
-
-            notificationUri.remove(action.getId());
+            restTemplate.exchange(link+action.getId(), HttpMethod.PUT, body, Void.class); //send notification uri to traffic
 
             HttpEntity<Action> actionBody = new HttpEntity<>(action, headers);
-            restTemplate.exchange(link+action.getId()+"/action", HttpMethod.PUT, actionBody, Void.class);
+            restTemplate.exchange(link+action.getId()+"/action", HttpMethod.PUT, actionBody, Void.class); //send the action to traffic
+            notificationUri.remove(action.getId());
         }else {
             logger.info(action.getId() + " is Watching TV! At home: " + id);
         }

@@ -40,7 +40,6 @@ public class Vehicle {
 
     public Vehicle() {
         this.roundTrip = new RoundTrip();
-        roundTrip.setVehicleId(id);
         roundTrip.start();
         this.vehicleProgress = new VehicleProgress();
         this.speed = 1;
@@ -62,6 +61,7 @@ public class Vehicle {
     }
 
     public void transferSimulator(String simulatorUrl){
+        roundTrip.setVehicleId(id);
         roundTrip.end();
 
         RestTemplate restTemplate = new RestTemplate();

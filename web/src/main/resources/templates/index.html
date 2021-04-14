@@ -14,6 +14,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script th:src="@{/js/requests.js}"></script>
     <script th:src="@{/js/websocket.js}"></script>
+    <script th:src="@{/js/information.js}"></script>
     <style>
         body {
             background-color: gray;
@@ -22,15 +23,28 @@
 </head>
 
 <body>
-    <div class="row" style="position:sticky;top:0;">
-        <div class="pull-right">
-            <div class="panel panel-default" >
-                <div class="panel-body">
-                    <h3 id="time"></h3>
+    <div style="position:sticky;top:0;">
+        <div class="row" >
+            <div class="pull-right">
+                <div class="panel panel-default" >
+                    <div class="panel-body">
+                        <h3 id="time"></h3>
+                        <a href="/information" target="_blank">Go to logs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="pull-right">
+                <div class="panel panel-default" >
+                    <div class="panel-body">
+                        <div id="homes"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <canvas id="network" width="1500" height="2000" >
         <script th:src="@{/js/graph.js}"></script>

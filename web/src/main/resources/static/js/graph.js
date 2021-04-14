@@ -14,9 +14,26 @@ var isSet = false;
 function map(){
     $("#time").html("[" + webSocket5.data.time+"]");
 
+
+    var homesPanel = $('#homes');
+    homesPanel.empty();
+    for(var i = 0; i < webSocket7.data.length; i++){
+        var s = "Home: " + webSocket7.data[i].id + ": ";
+        if(webSocket7.data[i].notificationUri != null){
+            for (const [key, value] of Object.entries(webSocket7.data[i].notificationUri)) {
+                s += key + " ";
+            }
+        }
+        homesPanel.append("<p>"+s+"</p>");
+    }
+
     graph = webSocket3.data;
 
-    //console.log("round trip: " +webSocket6.data.roundTrips[0].totalTime);
+    updateInformation();
+/*    for(var i = 0; i < webSocket6.data.roundTrips.length; i++ ){
+        console.log("round trip: " +webSocket6.data.roundTrips[].totalTime);
+    }*/
+
 
     let canvas = d3.select("#network");
 
