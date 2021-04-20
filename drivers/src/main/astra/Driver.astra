@@ -21,7 +21,6 @@ agent Driver extends mams.PassiveMAMSAgent {
     initial service_uri("http://localhost:8081/vehicles");
 
     rule +!init(){
-        //system.trace(true);
         MAMSAgent::!init();
         MAMSAgent::!created("base");
         +vehicle(tc.stringToInt(system.name()));
@@ -33,7 +32,6 @@ agent Driver extends mams.PassiveMAMSAgent {
         cartago.println("name: " + notifications);
 
         //!nextAction(notifications);
-
 
         int id = oa.getInt(notifications, "id");
         string type = oa.getString(notifications, "type");
@@ -56,37 +54,45 @@ agent Driver extends mams.PassiveMAMSAgent {
 
         boolean canLeave = oa.getBoolean(notifications, "canLeave");
 
-        //boolean s = (hasArrived == true);
-        //cartago.println("ex: " + intersectionCurrentCapacity < intersectionMaxCapacity);
-
         string action = "wait";
 
-      /*  if(hasArrived == true) {
+        boolean canEnterIntersection = false;
+        if(trafficLightStatus == true & intersectionCurrentCapacity < intersectionMaxCapacity){
+            canEnterIntersection = true;
+        }
+
+        boolean shouldSlowDown = false;
+        if(vehicleAhead == true | (obstacleAhead == true & vehicleSpeed > 1)  | (atLastCell == true & ( canEnterIntersection == false| vehicleSpeed > 1 ) ) ){
+            shouldSlowDown = true;
+        }
+
+        boolean canAccelerate = false;
+        if( ( (atLastCell == true & canEnterIntersection == true & vehicleSpeed == 0)
+                       | (atLastCell == false  & obstacleAhead == false) | (vehicleSpeed == 0 & atLastCell == false & vehicleAhead == false))
+                       & vehicleSpeed < streetSpeed & obstacleInVision == false){
+            canAccelerate = true;
+        }
+
+        if(hasArrived == true) {
             action = "wait";
         }
         else if(atIntersection == true & canLeave == true){
             action = "leave";
         }
-        else if( atLastCell == true & vehicleSpeed == 1 & trafficLightStatus == true & intersectionCurrentCapacity < intersectionMaxCapacity ){
+        else if( atLastCell == true & vehicleSpeed == 1 & canEnterIntersection == true ){
             action = "enter";
-        }*/
-        if(hasArrived == true | atLastCell == true){
-
         }
-        /*if( vehicleSpeed > 0 & vehicleAhead == true | obstacleAhead == true & vehicleSpeed > 1 | atLastCell == true & trafficLightStatus == false & intersectionCurrentCapacity >= intersectionMaxCapacity | vehicleSpeed < 2  ){
+        else if( vehicleSpeed >= 1 & shouldSlowDown == true ){
             action = "decelerate";
-        }*/
-    /*    else if( vehicleSpeed == 0 & ((atLastCell == true & (trafficLightStatus == true & (intersectionCurrentCapacity < intersectionMaxCapacity)))
-            & vehicleSpeed == 0) | (atLastCell == false  & obstacleAhead == false) | (vehicleSpeed == 0 & atLastCell == false & vehicleAhead == false)
-            & vehicleSpeed < streetSpeed & obstacleInVision == false ) action = "accelerate";
+        }
+        else if( vehicleSpeed == 0 | canAccelerate == true ) action = "accelerate";
         else if(atIntersection == false & vehicleSpeed > 0) action = "move";
-        else action = "wait";*/
+        else action = "wait";
 
         cartago.println("action: " + action);
         !act(action);
 
     }
-
 
 /*    rule +!nextAction(EnvironmentState s) : oa.getBoolean(s, "hasArrived") == true {
         cartago.println("action: wait");
@@ -110,26 +116,4 @@ agent Driver extends mams.PassiveMAMSAgent {
 
     rule +$cartago.property(string name, funct f) {
     }
-
-
-    /*   private boolean canEnterIntersection(EnvironmentState state){
-            return oa.getBoolean(state, "trafficLightStatus") == true
-                    & (oa.getInt(state, "intersectionCurrentCapacity") < oa.getInt(state, "intersectionMaxCapacity"));
-        }
-        private boolean shouldSlowDown(EnvironmentState state){
-            return oa.getBoolean(state, "vehicleAhead") == true
-                | (oa.getBoolean(state, "obstacleAhead") == true & oa.getInt(state, "vehicleSpeed") > 1)
-                | (oa.getBoolean(state, "atLastCell") == true
-                & ( (oa.getBoolean(state, "trafficLightStatus") == true
-                & (oa.getInt(state, "intersectionCurrentCapacity") < oa.getInt(state, "intersectionMaxCapacity"))) | state.getVehicleSpeed() > 1 ) == false);
-        }
-
-        private boolean canAccelerate(EnvironmentState state){
-            return ((oa.getBoolean(state, "atLastCell") == true
-            & (oa.getBoolean(state, "trafficLightStatus") == true & (oa.getInt(state, "intersectionCurrentCapacity") < oa.getInt(state, "intersectionMaxCapacity"))))
-            & oa.getInt(state, "vehicleSpeed") == 0)
-                    || (oa.getBoolean(state, "atLastCell") == false  & oa.getBoolean(state, "obstacleAhead") == false) | (oa.getInt(state, "vehicleSpeed") == 0 && oa.getBoolean(state, "atLastCell") == false & oa.getBoolean(state, "vehicleAhead") == false))
-                    && oa.getInt(state, "vehicleSpeed") < oa.getInt(state, "streetSpeed") && oa.getBoolean(state, "obstacleInVision") == false ;
-        }*/
-
 }

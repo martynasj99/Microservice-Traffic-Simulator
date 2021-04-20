@@ -23,7 +23,7 @@ public class ConfigurationController {
     @Autowired
     private DriverService driverService;
 
-    @PostMapping("/setup")
+    @PostMapping("/main/setup")
     public void setup(@RequestBody Configuration configuration){
         RestTemplate restTemplate = new RestTemplate();
         Map<Long, DayPlan> plans = configuration.getPlans();

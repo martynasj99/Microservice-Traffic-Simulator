@@ -25,23 +25,23 @@ public class Home {
 
     public void execute(Action action){
         if(action.getType().equals("plan")){
-            logger.info("Switching back to traffic: Home " +id + " Agent: " + action.getId());
+            logger.info("Switching back to traffic: Home " +id + " Agent: " + action.getAgentId());
 
             RestTemplate restTemplate = new RestTemplate();
             JSONObject object = new JSONObject();
 
-            object.put("notificationUri", notificationUri.get(action.getId()));
+            object.put("notificationUri", notificationUri.get(action.getAgentId()));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
-            restTemplate.exchange(link+action.getId(), HttpMethod.PUT, body, Void.class); //send notification uri to traffic
+            restTemplate.exchange(link+action.getAgentId(), HttpMethod.PUT, body, Void.class); //send notification uri to traffic
 
             HttpEntity<Action> actionBody = new HttpEntity<>(action, headers);
-            restTemplate.exchange(link+action.getId()+"/action", HttpMethod.PUT, actionBody, Void.class); //send the action to traffic
-            notificationUri.remove(action.getId());
+            restTemplate.exchange(link+action.getAgentId()+"/action", HttpMethod.PUT, actionBody, Void.class); //send the action to traffic
+            notificationUri.remove(action.getAgentId());
         }else {
-            logger.info(action.getId() + " is Watching TV! At home: " + id);
+            logger.info(action.getAgentId() + " is Watching TV! At home: " + id);
         }
     }
 

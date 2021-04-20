@@ -9,21 +9,23 @@ agent Main extends mams.PassiveMAMSAgent {
     module HALConverter hal;
     module TypeConversion tc;
 
-
     rule +!main(list args){
         MAMSAgent::!setup(9001);
         MAMSAgent::!created("base");
 
-        !get("http://localhost:8081/vehicles/count", int code, string content);
+        PassiveMAMSAgent::!listResource("setup", "Configuration");
+    }
 
-        int NUM = tc.stringToInt(content);
+    rule +!handleNewListItemResource(string artifact_name, "Configuration"){
+        PassiveMAMSAgent::!itemProperty(artifact_name, "initial", funct f);
+        int num = F.valueAsInt(f, 0);
         int X = 1;
-        while(X < NUM+1){
+        while(X < num+1){
             cartago.println("Driver " + X);
             S.createAgent(""+X, "Driver");
-            S.sleep(1000);
             !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code1, string content1);
             X = X+1;
         }
     }
+
 }

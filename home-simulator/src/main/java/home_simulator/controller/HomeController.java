@@ -28,7 +28,7 @@ public class HomeController {
     public void addAction(@PathVariable Long id, @RequestBody Action action){
         Home h = homeService.getHome(id);
         if(h.getNextAction() == null) h.setNextAction(new HashMap<>());
-        homeService.getHome(id).addNextAction(action.getId(), action);
+        homeService.getHome(id).addNextAction(action.getAgentId(), action);
     }
 
     @PutMapping("/{id}")

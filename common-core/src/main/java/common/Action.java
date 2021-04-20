@@ -1,7 +1,7 @@
 package common;
 
 public class Action {
-    private Long id;
+    private Long agentId;
     private String type;
     private String newDestination;
 
@@ -12,12 +12,12 @@ public class Action {
         this.type = type;
     }
 
-    public Long getId() {
-        return id;
+    public Long getAgentId() {
+        return agentId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
     }
 
     public String getType() {
