@@ -44,6 +44,7 @@ public class Vehicle {
         this.vehicleProgress = new VehicleProgress();
         this.speed = 1;
         this.vision = 5;
+
     }
 
     public void sendNotification(EnvironmentState state){
@@ -115,6 +116,10 @@ public class Vehicle {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public List<String> getPath() {

@@ -22,7 +22,9 @@ public class ConfigurationController {
     @PostMapping("/setup")
     public void setup(@RequestBody Configuration configuration) throws InvalidException {
 
+        long id = 1L;
         for(Vehicle vehicle : configuration.getVehicles()){
+            vehicle.setId(id++);
             vehicleService.addVehicle(vehicle);
         }
 

@@ -36,7 +36,7 @@ public class ManagementApplication {
             HttpEntity<String> body = new HttpEntity<>(registration.toString(), headers);
             template.postForEntity(uri, body, String.class);
 
-            configurationService.sendConfiguration("/config.json", "http://localhost:8081/setup");
+            configurationService.sendConfiguration("/traffic.json", "http://localhost:8081/setup");
             configurationService.sendConfiguration("/home.json", "http://localhost:8084/setup");
             configurationService.sendConfiguration("/drivers.json", "http://localhost:9001/main/setup");
         };
