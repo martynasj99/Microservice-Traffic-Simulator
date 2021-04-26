@@ -3,6 +3,7 @@ package management.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,5 +26,22 @@ public class ConfigurationService {
 
         HttpEntity<Map<?, ?>> body = new HttpEntity<>(object, headers);
         template.postForEntity(url, body, Void.class);
+    }
+
+    public void sendConfiguration(String file, String url, String type) throws IOException{
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper = new ObjectMapper();
+        InputStream in = getClass().getResourceAsStream(file);
+        Map<?, ?> object  = mapper.readValue(in, Map.class);
+
+        HttpEntity<Map<?, ?>> body = new HttpEntity<>(object, headers);
+        if(type.equals("PUT")){
+            template.exchange(url, HttpMethod.PUT, body, void.class);
+        }else {
+            sendConfiguration(file, url);
+        }
     }
 }

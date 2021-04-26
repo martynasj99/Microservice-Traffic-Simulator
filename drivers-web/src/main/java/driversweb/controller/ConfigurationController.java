@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +24,7 @@ public class ConfigurationController {
     @Autowired
     private DriverService driverService;
 
-    @PostMapping("/main/setup")
+    @PutMapping("/main/setup")
     public void setup(@RequestBody Configuration configuration){
         RestTemplate restTemplate = new RestTemplate();
         Map<Long, DayPlan> plans = configuration.getPlans();

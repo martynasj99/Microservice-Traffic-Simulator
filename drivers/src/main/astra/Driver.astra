@@ -1,6 +1,5 @@
 import mams.HALConverter;
 import modules.TypeConversion;
-import modules.LogicConversion;
 
 agent Driver extends mams.PassiveMAMSAgent {
     module System system;
@@ -9,14 +8,55 @@ agent Driver extends mams.PassiveMAMSAgent {
     module Functions F;
     module TypeConversion tc;
     module ObjectAccess oa;
-    module LogicConversion logic;
 
     initial !init();
 
     types mams {
         formula service_uri(string);
         formula vehicle(int);
+
+        formula hasArrived(EnvironmentState);
+        formula canLeave(EnvironmentState);
+        formula atIntersection(EnvironmentState);
+        formula canEnterIntersection(EnvironmentState);
+        formula atLastCell(EnvironmentState);
+
+        formula shouldSlowDownHelper(EnvironmentState);
+        formula shouldSlowDown(EnvironmentState);
+
+        formula canAccelerateHelper1(EnvironmentState);
+        formula canAccelerateHelper2(EnvironmentState);
+        formula canAccelerateHelper3(EnvironmentState);
+        formula canAccelerateHelper4(EnvironmentState);
+        formula canAccelerate(EnvironmentState);
+
+        formula isEnter(EnvironmentState);
+        formula isDecelerate(EnvironmentState);
+        formula isAccelerate(EnvironmentState);
+        formula isMove(EnvironmentState);
     }
+
+    inference hasArrived(EnvironmentState n) :- oa.getBoolean(n, "hasArrived") == true;
+    inference atIntersection(EnvironmentState n) :- oa.getBoolean(n, "atIntersection") == true;
+    inference canLeave(EnvironmentState n) :- oa.getBoolean(n, "canLeave") == true;
+    inference atLastCell(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == true;
+
+    inference canEnterIntersection(EnvironmentState n) :- oa.getBoolean(n, "trafficLightStatus") == true & oa.getInt(n, "intersectionCurrentCapacity") < oa.getInt(n, "intersectionMaxCapacity");
+
+    inference shouldSlowDownHelper(EnvironmentState n) :- ~canEnterIntersection(n) | oa.getInt(n, "vehicleSpeed") > 1; //This is necessary as the inference throws errors due to brackets
+    inference shouldSlowDown(EnvironmentState n) :- oa.getBoolean(n, "vehicleAhead") == true | oa.getBoolean(n, "obstacleAhead") == true & oa.getInt(n, "vehicleSpeed") > 1  |oa.getBoolean(n, "atLastCell") == true & shouldSlowDownHelper(n);
+
+    inference canAccelerateHelper1(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == false  & oa.getBoolean(n, "obstacleAhead")  == false | oa.getInt(n, "vehicleSpeed") == 0 & oa.getBoolean(n, "atLastCell") == false & oa.getBoolean(n, "vehicleAhead") == false;
+    inference canAccelerateHelper2(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == true & canEnterIntersection(n) & oa.getInt(n, "vehicleSpeed") == 0;
+    inference canAccelerateHelper3(EnvironmentState n) :-  canAccelerateHelper2(n) | canAccelerateHelper1(n);
+
+    inference canAccelerateHelper4(EnvironmentState n) :- oa.getInt(n, "vehicleSpeed")  < oa.getInt(n, "streetSpeed") & oa.getBoolean(n, "obstacleInVision") == false;
+    inference canAccelerate(EnvironmentState n) :-  canAccelerateHelper3(n) & canAccelerateHelper4(n);
+
+    inference isEnter(EnvironmentState n) :- atLastCell(n) & oa.getInt(n, "vehicleSpeed") == 1 & canEnterIntersection(n);
+    inference isDecelerate(EnvironmentState n) :- oa.getInt(n, "vehicleSpeed") >= 1 & shouldSlowDown(n);
+    inference isAccelerate(EnvironmentState n) :- oa.getInt(n, "vehicleSpeed") == 0 | canAccelerate(n);
+    inference isMove(EnvironmentState n) :- oa.getBoolean(n, "atIntersection") == false & oa.getInt(n, "vehicleSpeed") > 0;
 
     initial service_uri("http://localhost:8081/vehicles");
 
@@ -28,90 +68,38 @@ agent Driver extends mams.PassiveMAMSAgent {
         console.println("Hello world, " + system.name());
     }
 
-    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState notifications)) {
-        cartago.println("name: " + notifications);
-
-        //!nextAction(notifications);
-
-        int id = oa.getInt(notifications, "id");
-        string type = oa.getString(notifications, "type");
-
-        int vehicleSpeed = oa.getInt(notifications, "vehicleSpeed");
-        int streetSpeed = oa.getInt(notifications, "streetSpeed");
-        boolean trafficLightStatus = oa.getBoolean(notifications, "trafficLightStatus");
-
-        int intersectionCurrentCapacity = oa.getInt(notifications, "intersectionCurrentCapacity");
-        int intersectionMaxCapacity = oa.getInt(notifications, "intersectionMaxCapacity");
-
-        boolean atIntersection = oa.getBoolean(notifications, "atIntersection");
-        boolean atLastCell = oa.getBoolean(notifications, "atLastCell");
-        boolean hasArrived = oa.getBoolean(notifications, "hasArrived");
-        boolean hasEndNode = oa.getBoolean(notifications, "hasEndNode");
-
-        boolean vehicleAhead = oa.getBoolean(notifications, "vehicleAhead");
-        boolean obstacleInVision = oa.getBoolean(notifications, "obstacleInVision");
-        boolean obstacleAhead = oa.getBoolean(notifications, "obstacleAhead");
-
-        boolean canLeave = oa.getBoolean(notifications, "canLeave");
+    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
+        cartago.println("name: " + state);
 
         string action = "wait";
 
-        boolean canEnterIntersection = false;
-        if(trafficLightStatus == true & intersectionCurrentCapacity < intersectionMaxCapacity){
-            canEnterIntersection = true;
-        }
-
-        boolean shouldSlowDown = false;
-        if(vehicleAhead == true | (obstacleAhead == true & vehicleSpeed > 1)  | (atLastCell == true & ( canEnterIntersection == false| vehicleSpeed > 1 ) ) ){
-            shouldSlowDown = true;
-        }
-
-        boolean canAccelerate = false;
-        if( ( (atLastCell == true & canEnterIntersection == true & vehicleSpeed == 0)
-                       | (atLastCell == false  & obstacleAhead == false) | (vehicleSpeed == 0 & atLastCell == false & vehicleAhead == false))
-                       & vehicleSpeed < streetSpeed & obstacleInVision == false){
-            canAccelerate = true;
-        }
-
-        if(hasArrived == true) {
+        if(hasArrived(state)) {
             action = "wait";
         }
-        else if(atIntersection == true & canLeave == true){
+        else if(canLeave(state) & atIntersection(state)){
             action = "leave";
         }
-        else if( atLastCell == true & vehicleSpeed == 1 & canEnterIntersection == true ){
+        else if(isEnter(state) ){
             action = "enter";
         }
-        else if( vehicleSpeed >= 1 & shouldSlowDown == true ){
+        else if(isDecelerate(state) ){
             action = "decelerate";
         }
-        else if( vehicleSpeed == 0 | canAccelerate == true ) action = "accelerate";
-        else if(atIntersection == false & vehicleSpeed > 0) action = "move";
+        else if( isAccelerate(state) ) action = "accelerate";
+        else if( isMove(state)) action = "move";
         else action = "wait";
 
         cartago.println("action: " + action);
         !act(action);
-
     }
-
-/*    rule +!nextAction(EnvironmentState s) : oa.getBoolean(s, "hasArrived") == true {
-        cartago.println("action: wait");
-        !act("wait");
-    }
-
-    rule +!nextAction(EnvironmentState s) : oa.getBoolean(s, "atIntersection") == true & oa.getBoolean(s, "canLeave") == true {
-        cartago.println("action: leave");
-        !act("leave");
-    }
-
-    rule +!nextAction(EnvironmentState s) : oa.getInt(s, "vehicleSpeed") >= 1 & oa.getBoolean(s, "vehicleAhead") == true | (oa.getBoolean(s, "obstacleAhead") == true & oa.getInt(s, "vehicleSpeed") > 1) | (oa.getBoolean(s, "atLastCell") == true & (oa.getBoolean(s, "trafficLightStatus") == false & oa.getInt(s, "intersectionCurrentCapacity") >= oa.getInt(s, "intersectionMaxCapacity")))  | oa.getInt(s, "vehicleSpeed") < 2  {
-        cartago.println("action: decelerate");
-        !act("decelerate");
-    }*/
 
     rule +!act(string action): service_uri(string uri) & vehicle(int id){
        cartago.println("PUT: [ id: " + id + " uri: " + uri);
        !put(uri+"/"+id+"/action", "{\"type\":\""+action+"\"}", int code, string content);
+    }
+
+    rule $cartago.signal(string source_artifact_name, updatedObject(DayPlan plan)){
+
     }
 
     rule +$cartago.property(string name, funct f) {

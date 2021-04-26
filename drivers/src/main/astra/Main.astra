@@ -1,5 +1,6 @@
 import mams.HALConverter;
 import modules.TypeConversion;
+import modules.MapAccess;
 
 agent Main extends mams.PassiveMAMSAgent {
     module Prelude prelude;
@@ -8,24 +9,28 @@ agent Main extends mams.PassiveMAMSAgent {
     module Console console;
     module HALConverter hal;
     module TypeConversion tc;
+    module ObjectAccess oa;
+    module MapAccess ma;
 
     rule +!main(list args){
         MAMSAgent::!setup(9001);
         MAMSAgent::!created("base");
-
-        PassiveMAMSAgent::!listResource("setup", "Configuration");
+        PassiveMAMSAgent::!itemResource("setup", "Configuration");
     }
 
-    rule +!handleNewListItemResource(string artifact_name, "Configuration"){
-        PassiveMAMSAgent::!itemProperty(artifact_name, "initial", funct f);
-        int num = F.valueAsInt(f, 0);
+    rule $cartago.signal(string source_artifact_name, updatedObject(Configuration config)){
+        int num = oa.getInt(config, "initial");
         int X = 1;
-        while(X < num+1){
+        while(X <= num){
             cartago.println("Driver " + X);
+            cartago.println("OB: " + ma.getObjectByKey(config, "plans", X));
             S.createAgent(""+X, "Driver");
-            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code1, string content1);
+            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code, string content);
             X = X+1;
         }
+    }
+
+    rule +$cartago.property(string name, funct f) {
     }
 
 }
