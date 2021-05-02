@@ -2,6 +2,7 @@ package simulator.model.vehicle;
 
 import common.Action;
 import common.EnvironmentState;
+import common.VehicleLocation;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -87,9 +88,9 @@ public class Vehicle {
         setStreetProgress(0);
     }
 
-    public synchronized boolean execute(ServiceContext serviceContext, Action action){
+    public synchronized boolean execute(ServiceContext serviceContext, Action action, List<String> params){
         ActionExecutor executer = executors.get(action.getType()).create();
-        return executer.execute(this, serviceContext, null);
+        return executer.execute(this, serviceContext, params);
     }
 
     public boolean hasArrived(){

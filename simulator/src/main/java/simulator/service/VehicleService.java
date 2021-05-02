@@ -1,10 +1,12 @@
 package simulator.service;
 
 import common.EnvironmentState;
+import common.EnvironmentStreet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simulator.model.*;
 import simulator.model.network.Intersection;
+import simulator.model.network.Street;
 import simulator.model.vehicle.Vehicle;
 
 
@@ -15,9 +17,6 @@ import java.util.logging.Logger;
 public class VehicleService {
 
     private final Logger logger = Logger.getLogger(VehicleService.class.getName());
-
-    @Autowired
-    private ServiceContext serviceContext;
 
     @Autowired
     private MapService mapService;
@@ -44,6 +43,7 @@ public class VehicleService {
     }
 
     public Set<String> generatePossibleActions(Vehicle vehicle){
+
         Set<String> validActions = new HashSet<>();
         validActions.add("wait");
         if (vehicle.getCurrentNode() != null) {
@@ -101,7 +101,24 @@ public class VehicleService {
                 else environmentState.setCanLeave(waiting.peek().equals(vehicle) && traffic.getTraffic()[0] == null);
 
                 locationService.getLocations().getWaitingToLeave().put(vehicle.getCurrentNode(), waiting);
+
+                List<EnvironmentStreet> streets = new ArrayList<>();
+                for(Street s : mapService.getOutStreetsAtIntersection(vehicle.getCurrentNode())){
+                    EnvironmentStreet street = new EnvironmentStreet();
+                    street.setSource(s.getSource());
+                    street.setTarget(s.getTarget());
+                    street.setId(s.getRelationshipId());
+                    streets.add(street);
+
+                    Traffic t = locationService.getTraffic().get(s.getRelationshipId());
+                    if(waiting.contains(vehicle)) {
+                        street.setCanEnter(waiting.peek().equals(vehicle) && t.getTraffic()[0] == null);
+                    }
+                }
+                environmentState.setStreets(streets);
+                environmentState.setVehicleLocation(vehicle.getLocation());
             }
+
         }
         System.out.println(environmentState.toString());
         return environmentState;

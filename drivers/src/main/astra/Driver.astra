@@ -9,7 +9,7 @@ agent Driver extends mams.PassiveMAMSAgent {
     module TypeConversion tc;
     module ObjectAccess oa;
 
-    initial !init();
+    //initial !init();
 
     types mams {
         formula service_uri(string);
@@ -34,6 +34,8 @@ agent Driver extends mams.PassiveMAMSAgent {
         formula isDecelerate(EnvironmentState);
         formula isAccelerate(EnvironmentState);
         formula isMove(EnvironmentState);
+
+        formula state(string);
     }
 
     inference hasArrived(EnvironmentState n) :- oa.getBoolean(n, "hasArrived") == true;
@@ -60,12 +62,12 @@ agent Driver extends mams.PassiveMAMSAgent {
 
     initial service_uri("http://localhost:8081/vehicles");
 
-    rule +!init(){
+    rule +!main(DayPlan d){
         MAMSAgent::!init();
         MAMSAgent::!created("base");
         +vehicle(tc.stringToInt(system.name()));
         PassiveMAMSAgent::!itemResource("notifications", "EnvironmentState");
-        console.println("Hello world, " + system.name());
+        console.println("Hello world, " + system.name() + " Plan: "+d);
     }
 
     rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
@@ -98,10 +100,10 @@ agent Driver extends mams.PassiveMAMSAgent {
        !put(uri+"/"+id+"/action", "{\"type\":\""+action+"\"}", int code, string content);
     }
 
-    rule $cartago.signal(string source_artifact_name, updatedObject(DayPlan plan)){
-
-    }
-
     rule +$cartago.property(string name, funct f) {
     }
+
+    /*rule @message(inform, string sender, state(string X)) {
+      console.println(sender + " is alive!");
+    }*/
 }

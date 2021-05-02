@@ -29,6 +29,9 @@ public class EnvironmentState {
 
     private Set<String> possibleActions;
 
+    private Iterable<EnvironmentStreet> streets;
+    private VehicleLocation vehicleLocation;
+
     public int getId() {
         return id;
     }
@@ -165,6 +168,24 @@ public class EnvironmentState {
         this.atHome = atHome;
     }
 
+
+    public Iterable<EnvironmentStreet> getStreets() {
+        return streets;
+    }
+
+    public void setStreets(Iterable<EnvironmentStreet> streets) {
+        this.streets = streets;
+    }
+
+
+    public VehicleLocation getVehicleLocation() {
+        return vehicleLocation;
+    }
+
+    public void setVehicleLocation(VehicleLocation vehicleLocation) {
+        this.vehicleLocation = vehicleLocation;
+    }
+
     @Override
     public String toString() {
         return "EnvironmentState{" +
@@ -185,6 +206,8 @@ public class EnvironmentState {
                 ", canLeave=" + canLeave +
                 ", atHome=" + atHome +
                 ", possibleActions=" + possibleActions +
+                ", streets=" + streets +
+                ", vehicleLocation=" + vehicleLocation +
                 '}';
     }
 }

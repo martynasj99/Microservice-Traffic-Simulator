@@ -12,23 +12,46 @@ agent Main extends mams.PassiveMAMSAgent {
     module ObjectAccess oa;
     module MapAccess ma;
 
+    types main{
+        formula state(string);
+    }
+
     rule +!main(list args){
         MAMSAgent::!setup(9001);
         MAMSAgent::!created("base");
         PassiveMAMSAgent::!itemResource("setup", "Configuration");
+        PassiveMAMSAgent::!itemResource("time", "Time");
     }
 
     rule $cartago.signal(string source_artifact_name, updatedObject(Configuration config)){
+
+        cartago.println("artefact c---- " + source_artifact_name);
         int num = oa.getInt(config, "initial");
         int X = 1;
         while(X <= num){
             cartago.println("Driver " + X);
             cartago.println("OB: " + ma.getObjectByKey(config, "plans", X));
             S.createAgent(""+X, "Driver");
+            S.setMainGoal(""+X, [ma.getObjectByKey(config, "plans", X)]);
             !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code, string content);
             X = X+1;
         }
+
     }
+
+
+      rule $cartago.signal(string source_artifact_name, listItemArtifactCreated(string artifact_name, "Time")) {
+          cartago.println("artifact created: " + artifact_name);
+          PassiveMAMSAgent::!itemProperty(artifact_name, "time", funct f);
+          cartago.println("time: " + F.valueAsString(f,0));
+      }
+
+/*    rule $cartago.signal(string source_artifact_name, newObject(Time time)){
+        cartago.println("artefact t---- " + source_artifact_name);
+        string t = oa.getString(time, "time");
+        cartago.println("Time " + t);
+        send(inform, S.getOwner(), state(t));
+    }*/
 
     rule +$cartago.property(string name, funct f) {
     }

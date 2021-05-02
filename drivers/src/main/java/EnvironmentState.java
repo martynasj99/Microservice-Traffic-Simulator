@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Set;
 
 public class EnvironmentState {
@@ -26,4 +27,6 @@ public class EnvironmentState {
     public boolean atHome;
 
     public Set<String> possibleActions;
+    public List<EnvironmentStreet> streets;
+    public VehicleLocation vehicleLocation;
 }

@@ -2,6 +2,7 @@ package management.controller;
 
 import common.State;
 import management.service.InformationService;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,8 +30,12 @@ public class StepController {
 
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
+
+        JSONObject object = new JSONObject();
+        object.put("time", informationService.getTime());
+
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> body = new HttpEntity<>(headers);
-        //template.exchange("http://localhost:9001/time/"+informationService.getTime(), HttpMethod.PUT, body, Void.class);
+        HttpEntity<String> body = new HttpEntity<>(object.toString(), headers);
+        template.exchange("http://localhost:9001/main/time", HttpMethod.PUT, body, Void.class);
     }
 }

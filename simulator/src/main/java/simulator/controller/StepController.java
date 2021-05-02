@@ -12,6 +12,8 @@ import simulator.model.vehicle.Vehicle;
 import simulator.service.ServiceContext;
 import simulator.service.VehicleService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -33,10 +35,12 @@ public class StepController {
         for(Vehicle vehicle : vehicleService.getVehicles()){
             if(vehicle.getNotificationUri() != null){
                 if(vehicle.getNextAction() != null) {
+                    List<String > params = new ArrayList<>();
                     Action action = vehicle.getNextAction();
                     vehicle.setNextAction(null);
                     if(action.getNewDestination() != null) vehicle.setEndNode(action.getNewDestination());
-                    vehicle.execute(serviceContext, action);
+                    if(action.getStreet() != null) params.add(action.getStreet());
+                    vehicle.execute(serviceContext, action, params);
                     logger.info("Vehicle " + vehicle.getId() + " executed " +action.getType());
                 }
             }

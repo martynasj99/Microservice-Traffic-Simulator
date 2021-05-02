@@ -20,7 +20,6 @@
         "currentNode": "J1"
       }
     },
-
     {
       "route": {
         "startNode": "W1"
@@ -31,11 +30,11 @@
     },
     {
       "route": {
-        "startNode": "J11",
+        "startNode": "W1",
         "endNode": "H1"
       },
       "location": {
-        "currentNode": "J11"
+        "currentNode": "W1"
       }
     },
     {
@@ -76,7 +75,7 @@
     },
     {
       "name": "J5",
-      "type": "NONE"
+      "type": "TRAFFIC LIGHT"
     },
     {
       "name": "J6",

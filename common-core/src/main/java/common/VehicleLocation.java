@@ -1,4 +1,4 @@
-package simulator.model.vehicle;
+package common;
 
 public class VehicleLocation {
     private Long currentStreet;

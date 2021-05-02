@@ -2,6 +2,8 @@ package driversweb.model;
 
 import common.Action;
 import common.EnvironmentState;
+import common.EnvironmentStreet;
+import common.VehicleLocation;
 import driversweb.model.plan.DayPlan;
 
 public class Driver {
@@ -17,13 +19,31 @@ public class Driver {
         Action action = new Action();
         action.setAgentId(id);
 
+        if(state.getStreets() != null){
+            VehicleLocation path = state.getVehicleLocation();
+            Iterable<EnvironmentStreet> streets = state.getStreets();
+            for(EnvironmentStreet s : streets) {
+                if (action.getStreet() == null)
+                    action.setStreet(s.getId().toString()); //If no street is found first one is used as destination
+                if (s.getSource().equals(path.getCurrentNode()) && s.getTarget().equals(path.getNextNode())) {
+                    if (s.isCanEnter())
+                        action.setStreet(s.getId().toString());
+                    else {
+                        state.setCanLeave(false);
+                    }
+                }
+            }
+        }
+
         if(type.equals("traffic")){
             if(getPlan() != null && (state.isHasArrived() || !state.isHasEndNode() ) && getPlan().getSchedule().containsKey(time) ){
                 action.setType("plan");
                 action.setNewDestination(getPlan().getSchedule().get(time));
             }
             else if(state.isHasArrived() ) action.setType("wait");
-            else if(state.isAtIntersection() && state.isCanLeave()) action.setType("leave");
+            else if(state.isAtIntersection() && state.isCanLeave()) {
+                action.setType("leave");
+            }
             else if(state.isAtLastCell() && canEnterIntersection(state) && state.getVehicleSpeed() == 1) action.setType("enter");
             else if( state.getVehicleSpeed() >= 1 && shouldSlowDown(state)) action.setType("decelerate");
             else if( canAccelerate(state) || state.getVehicleSpeed() == 0 ) action.setType("accelerate");

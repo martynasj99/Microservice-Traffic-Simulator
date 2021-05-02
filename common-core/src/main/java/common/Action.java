@@ -4,6 +4,7 @@ public class Action {
     private Long agentId;
     private String type;
     private String newDestination;
+    private String street;
 
     public Action() {
     }
@@ -34,5 +35,13 @@ public class Action {
 
     public void setNewDestination(String newDestination) {
         this.newDestination = newDestination;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 }

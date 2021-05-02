@@ -4,6 +4,7 @@ import common.Action;
 import common.EnvironmentState;
 import driversweb.model.Driver;
 import driversweb.service.DriverService;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -58,8 +59,8 @@ public class DriverController {
         logger.info("Exiting... " + state.getId());
     }
 
-    @PutMapping("/time/{time}")
-    public void setTime(@PathVariable String time){
-        driverService.setTime(time);
+    @PutMapping("/main/time")
+    public void setTime(@RequestBody JSONObject time){
+        driverService.setTime((String) time.get("time"));
     }
 }
