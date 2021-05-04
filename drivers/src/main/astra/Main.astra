@@ -20,7 +20,7 @@ agent Main extends mams.PassiveMAMSAgent {
         MAMSAgent::!setup(9001);
         MAMSAgent::!created("base");
         PassiveMAMSAgent::!itemResource("setup", "Configuration");
-        PassiveMAMSAgent::!itemResource("time", "Time");
+        //PassiveMAMSAgent::!itemResource("time", "Time");
     }
 
     rule $cartago.signal(string source_artifact_name, updatedObject(Configuration config)){
@@ -38,13 +38,6 @@ agent Main extends mams.PassiveMAMSAgent {
         }
 
     }
-
-
-      rule $cartago.signal(string source_artifact_name, listItemArtifactCreated(string artifact_name, "Time")) {
-          cartago.println("artifact created: " + artifact_name);
-          PassiveMAMSAgent::!itemProperty(artifact_name, "time", funct f);
-          cartago.println("time: " + F.valueAsString(f,0));
-      }
 
 /*    rule $cartago.signal(string source_artifact_name, newObject(Time time)){
         cartago.println("artefact t---- " + source_artifact_name);

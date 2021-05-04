@@ -1,5 +1,7 @@
+package model;
+
 public class EnvironmentStreet {
-    public Long id;
+    public int id;
     public String source;
     public String target;
     public boolean canEnter;

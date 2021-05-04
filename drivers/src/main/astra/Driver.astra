@@ -1,19 +1,24 @@
 import mams.HALConverter;
 import modules.TypeConversion;
+import modules.RetrieveObject;
 
 agent Driver extends mams.PassiveMAMSAgent {
     module System system;
+    module Prelude prelude;
     module Console console;
     module HALConverter hal;
     module Functions F;
     module TypeConversion tc;
     module ObjectAccess oa;
+    module RetrieveObject ro;
 
     //initial !init();
 
     types mams {
         formula service_uri(string);
         formula vehicle(int);
+        formula newDestination(string);
+        formula street(string);
 
         formula hasArrived(EnvironmentState);
         formula canLeave(EnvironmentState);
@@ -36,6 +41,8 @@ agent Driver extends mams.PassiveMAMSAgent {
         formula isMove(EnvironmentState);
 
         formula state(string);
+
+        formula vehicleLocation(VehicleLocation);
     }
 
     inference hasArrived(EnvironmentState n) :- oa.getBoolean(n, "hasArrived") == true;
@@ -71,8 +78,30 @@ agent Driver extends mams.PassiveMAMSAgent {
     }
 
     rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
-        cartago.println("name: " + state);
+        list streets = oa.toList(state, "streets");
 
+        string s = "";
+
+        int i = 0;
+        while(i < prelude.size(streets)){
+            if(s == ""){
+                s = tc.intToString( oa.getInt(ro.getObjectAtIndex(streets, i), "id"));
+            }
+            if( oa.getString(ro.getObjectAtIndex(streets, i), "source") == oa.getString(ro.getObject(state, "vehicleLocation"), "currentNode") & oa.getString(ro.getObjectAtIndex(streets, i), "target") == oa.getString(ro.getObject(state, "vehicleLocation"), "nextNode")){
+                if(oa.getBoolean(ro.getObjectAtIndex(streets, i), "canEnter") == true){
+                    s = tc.intToString(oa.getInt(ro.getObjectAtIndex(streets, i), "id"));
+                }
+                else{
+                     oa.set(state, "canLeave", false);
+                }
+            }
+            i = i + 1;
+        }
+
+
+
+        +street(s);
+        +newDestination("");
         string action = "wait";
 
         if(hasArrived(state)) {
@@ -95,9 +124,13 @@ agent Driver extends mams.PassiveMAMSAgent {
         !act(action);
     }
 
-    rule +!act(string action): service_uri(string uri) & vehicle(int id){
+    rule +!test(VehicleLocation v) {
+        cartago.println("test: " + v);
+    }
+
+    rule +!act(string action): service_uri(string uri) & vehicle(int id) & newDestination(string d) & street(string s){
        cartago.println("PUT: [ id: " + id + " uri: " + uri);
-       !put(uri+"/"+id+"/action", "{\"type\":\""+action+"\"}", int code, string content);
+       !put(uri+"/"+id+"/action", "{\"agentId\":\""+id+"\", \"type\":\""+action+"\", \"newDestination\":\""+d+"\", \"street\":\""+s+"\"}", int code, string content);
     }
 
     rule +$cartago.property(string name, funct f) {

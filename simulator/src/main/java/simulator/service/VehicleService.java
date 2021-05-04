@@ -74,6 +74,8 @@ public class VehicleService {
         environmentState.setIntersectionCurrentCapacity(0);
         environmentState.setIntersectionMaxCapacity(0);
 
+        List<EnvironmentStreet> streets = new ArrayList<>();
+
         if(vehicle.getCurrentStreet() != null){
             Traffic traffic = locationService.getTraffic().get(vehicle.getCurrentStreet());
             environmentState.setStreetSpeed(mapService.getStreetById(vehicle.getCurrentStreet()).getMaxSpeed());
@@ -102,7 +104,7 @@ public class VehicleService {
 
                 locationService.getLocations().getWaitingToLeave().put(vehicle.getCurrentNode(), waiting);
 
-                List<EnvironmentStreet> streets = new ArrayList<>();
+
                 for(Street s : mapService.getOutStreetsAtIntersection(vehicle.getCurrentNode())){
                     EnvironmentStreet street = new EnvironmentStreet();
                     street.setSource(s.getSource());
@@ -115,11 +117,11 @@ public class VehicleService {
                         street.setCanEnter(waiting.peek().equals(vehicle) && t.getTraffic()[0] == null);
                     }
                 }
-                environmentState.setStreets(streets);
                 environmentState.setVehicleLocation(vehicle.getLocation());
             }
 
         }
+        environmentState.setStreets(streets);
         System.out.println(environmentState.toString());
         return environmentState;
     }

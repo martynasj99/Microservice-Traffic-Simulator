@@ -1,6 +1,7 @@
 public class Action {
-    public Long id;
+    public Long agentId;
     public String type;
     public String newDestination;
+    private String street;
 
 }

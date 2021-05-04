@@ -1,3 +1,5 @@
+import model.EnvironmentStreet;
+
 import java.util.List;
 import java.util.Set;
 

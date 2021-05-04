@@ -19,18 +19,16 @@ public class Driver {
         Action action = new Action();
         action.setAgentId(id);
 
-        if(state.getStreets() != null){
-            VehicleLocation path = state.getVehicleLocation();
-            Iterable<EnvironmentStreet> streets = state.getStreets();
-            for(EnvironmentStreet s : streets) {
-                if (action.getStreet() == null)
-                    action.setStreet(s.getId().toString()); //If no street is found first one is used as destination
-                if (s.getSource().equals(path.getCurrentNode()) && s.getTarget().equals(path.getNextNode())) {
-                    if (s.isCanEnter())
-                        action.setStreet(s.getId().toString());
-                    else {
-                        state.setCanLeave(false);
-                    }
+        VehicleLocation path = state.getVehicleLocation();
+        Iterable<EnvironmentStreet> streets = state.getStreets();
+        for(EnvironmentStreet s : streets) {
+            if (action.getStreet() == null)
+                action.setStreet(s.getId().toString()); //If no street is found first one is used as destination
+            if (s.getSource().equals(path.getCurrentNode()) && s.getTarget().equals(path.getNextNode())) {
+                if (s.isCanEnter())
+                    action.setStreet(s.getId().toString());
+                else {
+                    state.setCanLeave(false);
                 }
             }
         }
