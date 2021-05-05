@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 @RestController
@@ -42,6 +43,7 @@ public class StepController {
                 environmentState.setAtHome(true);
                 environmentState.setType("home");
                 environmentState.setId(home.getId().intValue());
+                environmentState.setStreets(new ArrayList<>());
                 home.sendNotification(environmentState);
             }
         }

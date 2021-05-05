@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import work_simulator.model.Work;
 import work_simulator.service.WorkService;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 @RestController
@@ -41,6 +42,7 @@ public class StepController {
                 environmentState.setAtHome(true);
                 environmentState.setType("work");
                 environmentState.setId(work.getId().intValue());
+                environmentState.setStreets(new ArrayList<>());
                 work.sendNotification(environmentState);
             }
         }

@@ -14,7 +14,7 @@
     {
       "route": {
         "startNode": "J1",
-        "endNode": "H2"
+        "endNode": "H1"
       },
       "location": {
         "currentNode": "J1"
@@ -31,7 +31,7 @@
     {
       "route": {
         "startNode": "W1",
-        "endNode": "H1"
+        "endNode": "H3"
       },
       "location": {
         "currentNode": "W1"
@@ -40,7 +40,7 @@
     {
       "route": {
         "startNode": "W1",
-        "endNode": "H1"
+        "endNode": "H4"
       },
       "location": {
         "currentNode": "W1"
@@ -49,7 +49,7 @@
     {
       "route": {
         "startNode": "J2",
-        "endNode": "H3"
+        "endNode": "H2"
       },
       "location": {
         "currentNode": "W1"
@@ -116,16 +116,23 @@
     {
       "name": "W1",
       "type": "WORK",
-      "capacity": 10
+      "capacity": 10,
+      "simulators": {
+        "1": "http://localhost:8084/work/1",
+        "2": "http://localhost:8084/work/1",
+        "3": "http://localhost:8084/work/1",
+        "4": "http://localhost:8084/work/1",
+        "5": "http://localhost:8084/work/1",
+        "6": "http://localhost:8084/work/1"
+      }
     },
     {
       "name": "H1",
       "type": "HOME",
       "capacity": 2,
       "simulators": {
-        "4": "http://localhost:8084/home/1",
         "1": "http://localhost:8084/home/1",
-        "5": "http://localhost:8084/home/1"
+        "2": "http://localhost:8084/home/1"
       }
     },
     {
@@ -133,19 +140,26 @@
       "type": "HOME",
       "capacity": 2,
       "simulators": {
-        "2": "http://localhost:8084/home/2"
+        "3": "http://localhost:8084/home/2",
+        "6": "http://localhost:8084/home/2"
       }
     },
 
     {
       "name": "H3",
       "type": "HOME",
-      "capacity": 2
+      "capacity": 2,
+      "simulators": {
+        "4": "http://localhost:8084/home/3"
+      }
     },
     {
       "name": "H4",
       "type": "HOME",
-      "capacity": 2
+      "capacity": 2,
+      "simulators": {
+        "5": "http://localhost:8084/home/4"
+      }
     }
 
 

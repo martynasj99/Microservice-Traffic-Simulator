@@ -12,13 +12,13 @@ agent Driver extends mams.PassiveMAMSAgent {
     module ObjectAccess oa;
     module RetrieveObject ro;
 
-    //initial !init();
-
     types mams {
         formula service_uri(string);
         formula vehicle(int);
         formula newDestination(string);
         formula street(string);
+
+        formula time(string);
 
         formula hasArrived(EnvironmentState);
         formula canLeave(EnvironmentState);
@@ -79,7 +79,7 @@ agent Driver extends mams.PassiveMAMSAgent {
 
     rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
         list streets = oa.toList(state, "streets");
-
+        cartago.println("TIME : " + time);
         string s = "";
 
         int i = 0;
@@ -97,8 +97,6 @@ agent Driver extends mams.PassiveMAMSAgent {
             }
             i = i + 1;
         }
-
-
 
         +street(s);
         +newDestination("");
@@ -124,10 +122,6 @@ agent Driver extends mams.PassiveMAMSAgent {
         !act(action);
     }
 
-    rule +!test(VehicleLocation v) {
-        cartago.println("test: " + v);
-    }
-
     rule +!act(string action): service_uri(string uri) & vehicle(int id) & newDestination(string d) & street(string s){
        cartago.println("PUT: [ id: " + id + " uri: " + uri);
        !put(uri+"/"+id+"/action", "{\"agentId\":\""+id+"\", \"type\":\""+action+"\", \"newDestination\":\""+d+"\", \"street\":\""+s+"\"}", int code, string content);
@@ -136,7 +130,8 @@ agent Driver extends mams.PassiveMAMSAgent {
     rule +$cartago.property(string name, funct f) {
     }
 
-    /*rule @message(inform, string sender, state(string X)) {
-      console.println(sender + " is alive!");
-    }*/
+   rule @message(inform, string sender, state(string X)) {
+      console.println(sender + " is alive! "  + X);
+      +time(X);
+    }
 }

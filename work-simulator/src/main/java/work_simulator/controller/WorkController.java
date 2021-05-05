@@ -25,7 +25,7 @@ public class WorkController {
     public void addAction(@PathVariable Long id, @RequestBody Action action){
         Work w = workService.getWork(id);
         if(w.getNextAction() == null) w.setNextAction(new HashMap<>());
-        workService.getWork(id).addNextAction(action.getId(), action);
+        workService.getWork(id).addNextAction(action.getAgentId(), action);
     }
 
     @PutMapping("/{id}")

@@ -14,39 +14,45 @@ agent Main extends mams.PassiveMAMSAgent {
 
     types main{
         formula state(string);
+        formula numberAgents(int);
     }
 
     rule +!main(list args){
         MAMSAgent::!setup(9001);
         MAMSAgent::!created("base");
+
+        +numberAgents(0);
+
         PassiveMAMSAgent::!itemResource("setup", "Configuration");
-        //PassiveMAMSAgent::!itemResource("time", "Time");
+        PassiveMAMSAgent::!itemResource("time", "Time");
     }
 
-    rule $cartago.signal(string source_artifact_name, updatedObject(Configuration config)){
+    rule $cartago.signal(string source_artifact_name, updatedObject(Object o)){
+        if(source_artifact_name == "main-base-time"){
+            string t = oa.getString(o, "time");
+            cartago.println("Time " + t);
+            !sendTime(t);
+        }else{
+            int num = oa.getInt(o, "initial");
+            +numberAgents(num);
+            int X = 1;
+            while(X <= num){
+                S.createAgent(""+X, "Driver");
+                S.setMainGoal(""+X, [ma.getObjectByKey(o, "plans", X)]);
+                !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code, string content);
+                X = X+1;
+            }
+        }
+    }
 
-        cartago.println("artefact c---- " + source_artifact_name);
-        int num = oa.getInt(config, "initial");
+    rule +!sendTime(string time) : numberAgents(int num){
         int X = 1;
         while(X <= num){
-            cartago.println("Driver " + X);
-            cartago.println("OB: " + ma.getObjectByKey(config, "plans", X));
-            S.createAgent(""+X, "Driver");
-            S.setMainGoal(""+X, [ma.getObjectByKey(config, "plans", X)]);
-            !put("http://localhost:8081/vehicles/"+X, "{\"notificationUri\":\"http://localhost:9001/"+X+"/notifications\"}", int code, string content);
+            send(inform, ""+X, state(time));
             X = X+1;
         }
-
     }
-
-/*    rule $cartago.signal(string source_artifact_name, newObject(Time time)){
-        cartago.println("artefact t---- " + source_artifact_name);
-        string t = oa.getString(time, "time");
-        cartago.println("Time " + t);
-        send(inform, S.getOwner(), state(t));
-    }*/
 
     rule +$cartago.property(string name, funct f) {
     }
-
 }

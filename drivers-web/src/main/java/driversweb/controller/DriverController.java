@@ -37,9 +37,9 @@ public class DriverController {
         Driver driver = driverService.getDrivers().get(id);
         driver.setTime(driverService.getTime());
         Action action = driver.generateAction(state, type);
-/*        if(!state.getPossibleActions().contains(action.getType())){
+        if(!state.getPossibleActions().contains(action.getType())){
             logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");
-        }*/
+        }
 
         HttpEntity<Action> body = new HttpEntity<>(action, headers);
         logger.info("Sending... " + state.getId() + " " + action.getType() + "Time: " + driverService.getTime());
@@ -50,6 +50,9 @@ public class DriverController {
                 break;
             case "home":
                 restTemplate.exchange("http://localhost:8084/home/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
+                break;
+            case "work":
+                restTemplate.exchange("http://localhost:8085/work/"+state.getId()+"/action", HttpMethod.PUT, body, Void.class);
                 break;
             default:
                 logger.warning("Invalid type");

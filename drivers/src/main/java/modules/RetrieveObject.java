@@ -3,7 +3,6 @@ package modules;
 import astra.core.Module;
 import astra.term.ListTerm;
 import astra.term.Primitive;
-import model.EnvironmentStreet;
 
 import java.lang.reflect.Field;
 
@@ -27,5 +26,5 @@ public class RetrieveObject extends Module {
             throw new RuntimeException(e);
         }
     }
-    
+
 }

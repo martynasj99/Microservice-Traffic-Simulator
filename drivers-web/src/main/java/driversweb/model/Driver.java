@@ -19,6 +19,7 @@ public class Driver {
         Action action = new Action();
         action.setAgentId(id);
 
+
         VehicleLocation path = state.getVehicleLocation();
         Iterable<EnvironmentStreet> streets = state.getStreets();
         for(EnvironmentStreet s : streets) {
@@ -53,6 +54,12 @@ public class Driver {
                 action.setNewDestination(getPlan().getSchedule().get(time));
             }else
                 action.setType("watching tv");
+        }else if(type.equals("work")){
+            if(getPlan() != null && getPlan().getSchedule().containsKey(time) ){
+                action.setType("plan");
+                action.setNewDestination(getPlan().getSchedule().get(time));
+            }else
+                action.setType("working");
         }
         return action;
     }
