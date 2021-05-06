@@ -17,11 +17,12 @@ agent Main extends mams.PassiveMAMSAgent {
         formula numberAgents(int);
     }
 
+
     rule +!main(list args){
         MAMSAgent::!setup(9001);
         MAMSAgent::!created("base");
 
-        +numberAgents(0);
+
 
         PassiveMAMSAgent::!itemResource("setup", "Configuration");
         PassiveMAMSAgent::!itemResource("time", "Time");

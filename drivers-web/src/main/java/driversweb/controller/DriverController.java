@@ -37,9 +37,12 @@ public class DriverController {
         Driver driver = driverService.getDrivers().get(id);
         driver.setTime(driverService.getTime());
         Action action = driver.generateAction(state, type);
-        if(!state.getPossibleActions().contains(action.getType())){
-            logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");
+        if(state.getPossibleActions() != null){
+            if(!state.getPossibleActions().contains(action.getType())){
+                logger.warning("ACTION: " + action.getType() +" NOT POSSIBLE");
+            }
         }
+
 
         HttpEntity<Action> body = new HttpEntity<>(action, headers);
         logger.info("Sending... " + state.getId() + " " + action.getType() + "Time: " + driverService.getTime());

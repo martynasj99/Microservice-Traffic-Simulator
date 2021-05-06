@@ -1,6 +1,7 @@
 import mams.HALConverter;
 import modules.TypeConversion;
 import modules.RetrieveObject;
+import modules.MapAccess;
 
 agent Driver extends mams.PassiveMAMSAgent {
     module System system;
@@ -11,6 +12,7 @@ agent Driver extends mams.PassiveMAMSAgent {
     module TypeConversion tc;
     module ObjectAccess oa;
     module RetrieveObject ro;
+    module MapAccess ma;
 
     types mams {
         formula service_uri(string);
@@ -19,6 +21,7 @@ agent Driver extends mams.PassiveMAMSAgent {
         formula street(string);
 
         formula time(string);
+        formula plan(list);
 
         formula hasArrived(EnvironmentState);
         formula canLeave(EnvironmentState);
@@ -39,6 +42,7 @@ agent Driver extends mams.PassiveMAMSAgent {
         formula isDecelerate(EnvironmentState);
         formula isAccelerate(EnvironmentState);
         formula isMove(EnvironmentState);
+        formula isPlan(EnvironmentState);
 
         formula state(string);
 
@@ -66,20 +70,24 @@ agent Driver extends mams.PassiveMAMSAgent {
     inference isDecelerate(EnvironmentState n) :- oa.getInt(n, "vehicleSpeed") >= 1 & shouldSlowDown(n);
     inference isAccelerate(EnvironmentState n) :- oa.getInt(n, "vehicleSpeed") == 0 | canAccelerate(n);
     inference isMove(EnvironmentState n) :- oa.getBoolean(n, "atIntersection") == false & oa.getInt(n, "vehicleSpeed") > 0;
+    inference isPlan(EnvironmentState n) :- oa.getBoolean(n, "hasArrived") == true & oa.getBoolean(n, "hasEndNode") == false;
 
     initial service_uri("http://localhost:8081/vehicles");
+    initial time("00:00");
 
-    rule +!main(DayPlan d){
+    rule +!main(list args){
         MAMSAgent::!init();
         MAMSAgent::!created("base");
         +vehicle(tc.stringToInt(system.name()));
+        +plan(args);
+
         PassiveMAMSAgent::!itemResource("notifications", "EnvironmentState");
-        console.println("Hello world, " + system.name() + " Plan: "+d);
+        console.println("Hello world, " + system.name() + " Plan: "+ro.getObjectAtIndex(args, 0));
     }
 
-    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) {
+    rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) : time(string t) & plan(list p){
         list streets = oa.toList(state, "streets");
-        cartago.println("TIME : " + time);
+        cartago.println("Time: " + t);
         string s = "";
 
         int i = 0;
@@ -102,21 +110,27 @@ agent Driver extends mams.PassiveMAMSAgent {
         +newDestination("");
         string action = "wait";
 
-        if(hasArrived(state)) {
-            action = "wait";
+        if(oa.getString(state, "type") == "traffic"){
+            if( isPlan(state) & ma.containsKey(ro.getObjectAtIndex(p, 0 ), "schedule", t) == true) {
+                action = "plan";
+                +newDestination(ma.getStringByKey(ro.getObjectAtIndex(p, 0 ), "schedule", t));
+            }
+            else if(hasArrived(state)) {
+                action = "wait";
+            }
+            else if(canLeave(state) & atIntersection(state)){
+                action = "leave";
+            }
+            else if(isEnter(state) ){
+                action = "enter";
+            }
+            else if(isDecelerate(state) ){
+                action = "decelerate";
+            }
+            else if( isAccelerate(state) ) action = "accelerate";
+            else if( isMove(state)) action = "move";
+            else action = "wait";
         }
-        else if(canLeave(state) & atIntersection(state)){
-            action = "leave";
-        }
-        else if(isEnter(state) ){
-            action = "enter";
-        }
-        else if(isDecelerate(state) ){
-            action = "decelerate";
-        }
-        else if( isAccelerate(state) ) action = "accelerate";
-        else if( isMove(state)) action = "move";
-        else action = "wait";
 
         cartago.println("action: " + action);
         !act(action);
@@ -131,7 +145,6 @@ agent Driver extends mams.PassiveMAMSAgent {
     }
 
    rule @message(inform, string sender, state(string X)) {
-      console.println(sender + " is alive! "  + X);
-      +time(X);
-    }
+      -+time(X);
+   }
 }

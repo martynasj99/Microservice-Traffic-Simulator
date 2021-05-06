@@ -1,3 +1,5 @@
+import model.DayPlan;
+
 import java.util.Map;
 
 public class Configuration {
