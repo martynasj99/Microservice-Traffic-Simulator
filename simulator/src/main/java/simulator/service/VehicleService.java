@@ -104,7 +104,6 @@ public class VehicleService {
 
                 locationService.getLocations().getWaitingToLeave().put(vehicle.getCurrentNode(), waiting);
 
-
                 for(Street s : mapService.getOutStreetsAtIntersection(vehicle.getCurrentNode())){
                     EnvironmentStreet street = new EnvironmentStreet();
                     street.setSource(s.getSource());

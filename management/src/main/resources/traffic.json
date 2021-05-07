@@ -22,7 +22,8 @@
     },
     {
       "route": {
-        "startNode": "W1"
+        "startNode": "W1",
+        "endNode": "H2"
       },
       "location": {
         "currentNode": "W1"

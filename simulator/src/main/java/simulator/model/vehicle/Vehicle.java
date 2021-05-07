@@ -64,6 +64,7 @@ public class Vehicle {
 
     public void transferSimulator(String simulatorUrl){
         roundTrip.setVehicleId(id);
+        roundTrip.setRoute(route);
         roundTrip.end();
 
         RestTemplate restTemplate = new RestTemplate();
@@ -104,7 +105,8 @@ public class Vehicle {
         setProgress(2);
         setCurrentNode(getStartNode());
         setNextNode(null);
-        getRoundTrip().start();
+        roundTrip = new RoundTrip();
+        roundTrip.start();
     }
 
     public void accelerate(){

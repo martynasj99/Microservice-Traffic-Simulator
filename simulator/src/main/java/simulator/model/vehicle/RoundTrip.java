@@ -6,6 +6,7 @@ public class RoundTrip {
     private long startTime;
     private long endTime;
     private float totalTime;
+    private VehicleRoute route;
 
     public void start() {
         startTime = System.currentTimeMillis();
@@ -30,6 +31,14 @@ public class RoundTrip {
 
     public void setTotalTime(float totalTime) {
         this.totalTime = totalTime;
+    }
+
+    public VehicleRoute getRoute() {
+        return route;
+    }
+
+    public void setRoute(VehicleRoute route) {
+        this.route = route;
     }
 }
 

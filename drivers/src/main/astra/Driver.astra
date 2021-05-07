@@ -26,10 +26,14 @@ agent Driver extends mams.PassiveMAMSAgent {
         formula hasArrived(EnvironmentState);
         formula canLeave(EnvironmentState);
         formula atIntersection(EnvironmentState);
+
+        formula canEnterIntersectionHelper(EnvironmentState);
         formula canEnterIntersection(EnvironmentState);
         formula atLastCell(EnvironmentState);
 
-        formula shouldSlowDownHelper(EnvironmentState);
+        formula shouldSlowDownHelper1(EnvironmentState);
+        formula shouldSlowDownHelper2(EnvironmentState);
+        formula shouldSlowDownHelper3(EnvironmentState);
         formula shouldSlowDown(EnvironmentState);
 
         formula canAccelerateHelper1(EnvironmentState);
@@ -54,15 +58,17 @@ agent Driver extends mams.PassiveMAMSAgent {
     inference canLeave(EnvironmentState n) :- oa.getBoolean(n, "canLeave") == true;
     inference atLastCell(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == true;
 
-    inference canEnterIntersection(EnvironmentState n) :- oa.getBoolean(n, "trafficLightStatus") == true & oa.getInt(n, "intersectionCurrentCapacity") < oa.getInt(n, "intersectionMaxCapacity");
+    inference canEnterIntersectionHelper(EnvironmentState n) :- oa.getInt(n, "intersectionCurrentCapacity") < oa.getInt(n, "intersectionMaxCapacity");
+    inference canEnterIntersection(EnvironmentState n) :- oa.getBoolean(n, "trafficLightStatus") == true & canEnterIntersectionHelper(n);
 
-    inference shouldSlowDownHelper(EnvironmentState n) :- ~canEnterIntersection(n) | oa.getInt(n, "vehicleSpeed") > 1; //This is necessary as the inference throws errors due to brackets
-    inference shouldSlowDown(EnvironmentState n) :- oa.getBoolean(n, "vehicleAhead") == true | oa.getBoolean(n, "obstacleAhead") == true & oa.getInt(n, "vehicleSpeed") > 1  |oa.getBoolean(n, "atLastCell") == true & shouldSlowDownHelper(n);
+    inference shouldSlowDownHelper1(EnvironmentState n) :- ~canEnterIntersection(n) | oa.getInt(n, "vehicleSpeed") > 1; //This is necessary as the inference throws errors due to brackets
+    inference shouldSlowDownHelper2(EnvironmentState n) :- oa.getBoolean(n, "obstacleAhead") == true & oa.getInt(n, "vehicleSpeed") > 1;
+    inference shouldSlowDownHelper3(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == true & shouldSlowDownHelper1(n);
+    inference shouldSlowDown(EnvironmentState n) :- oa.getBoolean(n, "vehicleAhead") == true | shouldSlowDownHelper2(n) | shouldSlowDownHelper3(n);
 
     inference canAccelerateHelper1(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == false  & oa.getBoolean(n, "obstacleAhead")  == false | oa.getInt(n, "vehicleSpeed") == 0 & oa.getBoolean(n, "atLastCell") == false & oa.getBoolean(n, "vehicleAhead") == false;
     inference canAccelerateHelper2(EnvironmentState n) :- oa.getBoolean(n, "atLastCell") == true & canEnterIntersection(n) & oa.getInt(n, "vehicleSpeed") == 0;
     inference canAccelerateHelper3(EnvironmentState n) :-  canAccelerateHelper2(n) | canAccelerateHelper1(n);
-
     inference canAccelerateHelper4(EnvironmentState n) :- oa.getInt(n, "vehicleSpeed")  < oa.getInt(n, "streetSpeed") & oa.getBoolean(n, "obstacleInVision") == false;
     inference canAccelerate(EnvironmentState n) :-  canAccelerateHelper3(n) & canAccelerateHelper4(n);
 
@@ -78,7 +84,7 @@ agent Driver extends mams.PassiveMAMSAgent {
     rule +!main(list args){
         MAMSAgent::!init();
         MAMSAgent::!created("base");
-        +vehicle(tc.stringToInt(system.name()));
+
         +plan(args);
 
         PassiveMAMSAgent::!itemResource("notifications", "EnvironmentState");
@@ -87,15 +93,17 @@ agent Driver extends mams.PassiveMAMSAgent {
 
     rule $cartago.signal(string source_artifact_name, updatedObject(EnvironmentState state)) : time(string t) & plan(list p){
         list streets = oa.toList(state, "streets");
-        cartago.println("Time: " + t);
+
+        -+vehicle(oa.getInt(state, "id" ));
+
         string s = "";
 
         int i = 0;
         while(i < prelude.size(streets)){
-            if(s == ""){
+            /*if(s == ""){
                 s = tc.intToString( oa.getInt(ro.getObjectAtIndex(streets, i), "id"));
-            }
-            if( oa.getString(ro.getObjectAtIndex(streets, i), "source") == oa.getString(ro.getObject(state, "vehicleLocation"), "currentNode") & oa.getString(ro.getObjectAtIndex(streets, i), "target") == oa.getString(ro.getObject(state, "vehicleLocation"), "nextNode")){
+            }*/
+            if( ( oa.getString(ro.getObjectAtIndex(streets, i), "source") == oa.getString(ro.getObject(state, "vehicleLocation"), "currentNode") ) & ( oa.getString(ro.getObjectAtIndex(streets, i), "target") == oa.getString(ro.getObject(state, "vehicleLocation"), "nextNode"))){
                 if(oa.getBoolean(ro.getObjectAtIndex(streets, i), "canEnter") == true){
                     s = tc.intToString(oa.getInt(ro.getObjectAtIndex(streets, i), "id"));
                 }
@@ -106,14 +114,17 @@ agent Driver extends mams.PassiveMAMSAgent {
             i = i + 1;
         }
 
-        +street(s);
-        +newDestination("");
-        string action = "wait";
+        -+street(s);
+        -+newDestination("");
 
-        if(oa.getString(state, "type") == "traffic"){
+        string action = "wait";
+        string type = oa.getString(state, "type");
+
+        if(type == "traffic"){
+            -+service_uri("http://localhost:8081/vehicles");
             if( isPlan(state) & ma.containsKey(ro.getObjectAtIndex(p, 0 ), "schedule", t) == true) {
+                -+newDestination(ma.getStringByKey(ro.getObjectAtIndex(p, 0 ), "schedule", t));
                 action = "plan";
-                +newDestination(ma.getStringByKey(ro.getObjectAtIndex(p, 0 ), "schedule", t));
             }
             else if(hasArrived(state)) {
                 action = "wait";
@@ -130,6 +141,22 @@ agent Driver extends mams.PassiveMAMSAgent {
             else if( isAccelerate(state) ) action = "accelerate";
             else if( isMove(state)) action = "move";
             else action = "wait";
+        }else if(type == "home"){
+            -+service_uri("http://localhost:8084/home");
+            if(ma.containsKey(ro.getObjectAtIndex(p, 0 ), "schedule", t) == true) {
+                -+newDestination(ma.getStringByKey(ro.getObjectAtIndex(p, 0 ), "schedule", t));
+                action = "plan";
+            }else{
+                action = "watching tv";
+            }
+        }else if(type == "work"){
+            -+service_uri("http://localhost:8084/work");
+            if(ma.containsKey(ro.getObjectAtIndex(p, 0 ), "schedule", t) == true) {
+                -+newDestination(ma.getStringByKey(ro.getObjectAtIndex(p, 0 ), "schedule", t));
+                action = "plan";
+            }else{
+                action = "working";
+            }
         }
 
         cartago.println("action: " + action);
@@ -137,8 +164,8 @@ agent Driver extends mams.PassiveMAMSAgent {
     }
 
     rule +!act(string action): service_uri(string uri) & vehicle(int id) & newDestination(string d) & street(string s){
-       cartago.println("PUT: [ id: " + id + " uri: " + uri);
-       !put(uri+"/"+id+"/action", "{\"agentId\":\""+id+"\", \"type\":\""+action+"\", \"newDestination\":\""+d+"\", \"street\":\""+s+"\"}", int code, string content);
+       cartago.println("PUT: [ id: " + id + " uri: " + uri + " Destination: "+ d + " Street Choice: " + s);
+       !put(uri+"/"+id+"/action", "{\"agentId\":\""+system.name()+"\", \"type\":\""+action+"\", \"newDestination\":\""+d+"\", \"street\":\""+s+"\"}", int code, string content);
     }
 
     rule +$cartago.property(string name, funct f) {

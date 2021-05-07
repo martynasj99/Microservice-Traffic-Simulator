@@ -38,8 +38,8 @@ public class StepController {
                     List<String > params = new ArrayList<>();
                     Action action = vehicle.getNextAction();
                     vehicle.setNextAction(null);
-                    if(action.getNewDestination() != null) vehicle.setEndNode(action.getNewDestination());
-                    if(action.getStreet() != null) params.add(action.getStreet());
+                    if(action.getNewDestination() != null && !action.getNewDestination().equals("")) vehicle.setEndNode(action.getNewDestination());
+                    if(action.getStreet() != null && !action.getStreet().equals("")) params.add(action.getStreet());
                     vehicle.execute(serviceContext, action, params);
                     logger.info("Vehicle " + vehicle.getId() + " executed " +action.getType());
                 }
